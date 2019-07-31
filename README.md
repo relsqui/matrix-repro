@@ -1,8 +1,10 @@
 # Appveyor Matrix Experiments
 
-[Full build history for this repo.](https://ci.appveyor.com/project/relsqui/matrix-repro/history)
+* [Full build history for this repo.](https://ci.appveyor.com/project/relsqui/matrix-repro/history)
+* [Build matrix documentation.](https://www.appveyor.com/docs/build-configuration/#build-matrix)
+* [Commit filtering documentation.](https://www.appveyor.com/docs/how-to/filtering-commits/)
 
-Here's the full set of jobs defined in this appveyor.yml:
+Here's the full set of jobs defined in appveyor.yml for this repo:
 
 ```
 environment:
@@ -101,7 +103,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 * **Result:** Same as previous.
 
 
-## Simple push
+## simple push
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358586)
 
@@ -122,7 +124,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 * **Expected/Why:** Wanted to see if starting from the UI made a difference the first time, expected it to run only `test`.
 * **Result:** _No_ jobs ran. (Apparently this leaves an empty build that appears to be queuing forever. Weird.) The event log says that the branch `master` wasn't in the white list for either of the `nightly` or `release` special cases, which is correct; for the `test` and `extra` jobs, it says the commit message didn't match the condition. This is more surprising than if it had worked backwards and just run `extra`.
 
-## Except/only/only for `extra`
+## except/only/only for `extra`
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358700)
 
@@ -150,6 +152,16 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 * **Change:** No code changes, but ran the above config with `[full ci]`.
 * **Expected/Why:** `test` and `extra` run, this is the intended behavior.
 * **Result:** `test` and `extra` ran! So far so good.
+
+## nightly
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358756)
+
+* **Change:** Tagged a commit as `nightly` and pushed the tag.
+* **Expected/Why:** Only the `nightly` job runs, following the special case block.
+* **Result:** `nightly` and `test` both run. I'm genuinely unsure why `test` was included here.
+
+I have a couple of ideas for where to go next (try overtly excluding `test` for `nightly` and `release` and then recreate the tag; see what happens on a release branch) but it's 7pm and I will save that for later.
 
 <!-- For easy copy/paste:
 
