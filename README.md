@@ -66,7 +66,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
     message: /\[full ci\]/
 ```
 
-* **Action:** Started a run on master with no modifiers (triggered from the web UI).
+* **Change:** Started a run on master with no modifiers (triggered from the web UI).
 * **Expected/Why:** This block takes effect, since we're not on any of the exception branches. The `only_commits` doesn't apply since we didn't add that commit message, so we skip jobs `except` for the `tests` job.
 * **Result:** _All_ jobs ran. That might be because I started it from the web UI? Will experiment more.
 
@@ -87,7 +87,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
     message: /\[full ci\]/
 ```
 
-* **Action:** Pushed a commit to master with no modifiers.
+* **Change:** Pushed a commit to master with no modifiers.
 * **Expected/Why:** Maybe the order of qualifiers is the other way; run `only` the specified jobs unless the `only_commits` condition is met? Or if that condition is met?
 * **Result:** `test` and `extra` jobs ran. This is the closest approximation to the behavior in the real repo in the failure case.
 
@@ -96,7 +96,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358514)
 
 
-* **Action:** No code changes in this one, just added `[full ci]` to the commit message to see what would happen.
+* **Change:** No code changes in this one, just added `[full ci]` to the commit message to see what would happen.
 * **Expected/Why:** Same as previous; this is the case in which that's supposed to happen.
 * **Result:** Same as previous.
 
@@ -118,9 +118,31 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
     message: /\[full ci\]/
 ```
 
-* **Action:** Reverted to except/except/only and pushed.
+* **Change:** Reverted to except/except/only and pushed.
 * **Expected/Why:** Wanted to see if starting from the UI made a difference the first time, expected it to run only `test`.
 * **Result:** _No_ jobs ran. (Apparently this leaves an empty build that appears to be queuing forever. Weird.) The event log says that the branch `master` wasn't in the white list for either of the `nightly` or `release` special cases, which is correct; for the `test` and `extra` jobs, it says the commit message didn't match the condition. This is more surprising than if it had worked backwards and just run `extra`.
+
+## Except/only/only for `extra`
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358700)
+
+```
+-
+  branches:
+    except:
+      - /^release.*/
+      - nightly
+  matrix:
+    only:
+      - JOB_NAME: extra
+  only_commits:
+    message: /\[full ci\]/
+```
+
+* **Change:** Flipped `except` `test` into `only` `extra`, on the theory of having the `only_commits` instruction only apply to that job. (I can't remember why I didn't do it this way in the original now.)
+* **Expected/Why:** Only the `test` job runs as long as I don't provide the commit message flag, but I'm not sure how this will interact with the other special cases.
+* **Result:** Only `test` ran! Good start.
+
 
 
 <!-- For easy copy/paste:
@@ -132,7 +154,7 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 ```
 ```
 
-* **Action:** 
+* **Change:** 
 * **Expected/Why:** 
 * **Result:** 
 
