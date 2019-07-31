@@ -37,8 +37,8 @@ for:
       - /^release.*/
       - nightly
   matrix:
-    except:
-      - JOB_NAME: tests
+    only:
+      - JOB_NAME: extra
   only_commits:
     message: /\[full ci\]/
 

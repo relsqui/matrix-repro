@@ -101,11 +101,36 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 * **Result:** Same as previous.
 
 
+## Simple push
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358586)
+
+```
+-
+  branches:
+    except:
+      - /^release.*/
+      - nightly
+  matrix:
+    except:
+      - JOB_NAME: tests
+  only_commits:
+    message: /\[full ci\]/
+```
+
+* **Action:** Reverted to except/except/only and pushed.
+* **Expected/Why:** Wanted to see if starting from the UI made a difference the first time, expected it to run only `test`.
+* **Result:** _No_ jobs ran. (Apparently this leaves an empty build that appears to be queuing forever. Weird.) The event log says that the branch `master` wasn't in the white list for either of the `nightly` or `release` special cases, which is correct; for the `test` and `extra` jobs, it says the commit message didn't match the condition. This is more surprising than if it had worked backwards and just run `extra`.
+
+
 <!-- For easy copy/paste:
 
 ##
 
 [Appveyor run.]()
+
+```
+```
 
 * **Action:** 
 * **Expected/Why:** 
