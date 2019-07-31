@@ -89,10 +89,23 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 
 * **Action:** Pushed a commit to master with no modifiers.
 * **Expected/Why:** Maybe the order of qualifiers is the other way; run `only` the specified jobs unless the `only_commits` condition is met? Or if that condition is met?
-* **Result:** `test` and `extra` jobs ran. This is the closest approximation to what's happening in the real repo.
+* **Result:** `test` and `extra` jobs ran. This is the closest approximation to the behavior in the real repo in the failure case.
+
+## [full ci]
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358514)
+
+
+* **Action:** No code changes in this one, just added `[full ci]` to the commit message to see what would happen.
+* **Expected/Why:** Same as previous; this is the case in which that's supposed to happen.
+* **Result:** Same as previous.
 
 
 <!-- For easy copy/paste:
+
+##
+
+[Appveyor run.]()
 
 * **Action:** 
 * **Expected/Why:** 
