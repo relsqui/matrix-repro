@@ -1,0 +1,53 @@
+image: Visual Studio 2015
+
+environment:
+  matrix:
+  - JOB_NAME: test
+    JOB_DESC: "the one that should run every time"
+
+  - JOB_NAME: release
+    JOB_DESC: "the one that should run on the release branch"
+
+  - JOB_NAME: nightly
+    JOB_DESC: "the one that should run on the nightly tag"
+
+  - JOB_NAME: extra
+    JOB_DESC: "the one that should only run by request"
+
+for:
+-
+  branches:
+    only:
+      - /^release.*/
+  matrix:
+    only:
+      - JOB_NAME: release
+
+-
+  branches:
+    only:
+      - nightly
+  matrix:
+    only:
+      - JOB_NAME: nightly
+
+-
+  branches:
+    except:
+      - /^release.*/
+      - nightly
+  matrix:
+    except:
+      - JOB_NAME: tests
+  only_commits:
+    message: /\[full ci\]/
+
+branches:
+  only:
+    - master
+    - /^release.*/
+    - /^feat.*/
+    - nightly
+
+build_script:
+- ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC)."
