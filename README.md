@@ -143,7 +143,13 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 * **Expected/Why:** Only the `test` job runs as long as I don't provide the commit message flag, but I'm not sure how this will interact with the other special cases.
 * **Result:** Only `test` ran! Good start.
 
+## [full ci] again
 
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26358732)
+
+* **Change:** No code changes, but ran the above config with `[full ci]`.
+* **Expected/Why:** `test` and `extra` run, this is the intended behavior.
+* **Result:** `test` and `extra` ran! So far so good.
 
 <!-- For easy copy/paste:
 
