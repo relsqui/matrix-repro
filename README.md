@@ -196,6 +196,13 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** Only `test` runs.
 * **Result:** So far so good!
 
+## [full ci] with two explicit blocks
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26413961)
+
+* **Change:** No code change, just adding [full ci] to the above.
+* **Expected/Why:** `test` and `extra` run, following the second block.
+* **Result:** Only `extra` ran. :(
 
 <!-- For easy copy/paste:
 
