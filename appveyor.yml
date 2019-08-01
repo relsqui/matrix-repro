@@ -33,14 +33,27 @@ for:
 
 -
   branches:
-    except:
-      - /^release.*/
-      - nightly
+    only:
+      - master
+      - /^feat.*/
+  except_commits:
+    message: /\[full ci\]/
   matrix:
     only:
-      - JOB_NAME: extra
-  only_commits:
+      - JOB_NAME: test
+
+-
+  branches:
+    only:
+      - master
+      - /^feat.*/
+  include_commits:
     message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: test
+      - JOB_NAME: extra
+
 
 branches:
   only:
