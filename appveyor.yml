@@ -36,7 +36,7 @@ for:
     only:
       - master
       - /^feat.*/
-  except_commits:
+  skip_commits:
     message: /\[full ci\]/
   matrix:
     only:
