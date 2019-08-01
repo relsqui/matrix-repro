@@ -163,6 +163,40 @@ The rest of this file will be me experimenting, taking notes, and thinking out l
 
 I have a couple of ideas for where to go next (try overtly excluding `test` for `nightly` and `release` and then recreate the tag; see what happens on a release branch) but it's 7pm and I will save that for later.
 
+## Explicit only blocks.
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26411614)
+
+```
+-
+  branches:
+    only:
+      - master
+      - /^feat.*/
+  skip_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: test
+
+-
+  branches:
+    only:
+      - master
+      - /^feat.*/
+  only_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: test
+      - JOB_NAME: extra
+```
+
+* **Change:** Instead of leaving the default case implicit, have two separate blocks for the default case and the extended run.
+* **Expected/Why:** Only `test` runs.
+* **Result:** So far so good!
+
+
 <!-- For easy copy/paste:
 
 ##
