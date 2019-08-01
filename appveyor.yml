@@ -47,7 +47,7 @@ for:
     only:
       - master
       - /^feat.*/
-  include_commits:
+  only_commits:
     message: /\[full ci\]/
   matrix:
     only:
