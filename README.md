@@ -257,6 +257,23 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `release` and `test` run for the same reasons as before, `extra` also runs.
 * **Result:** Oh wait no, `extra` doesn't run in this case because I told it not to. Given the way it's now configured, I think I can remove that branch constraint and let people have that if they want to; shouldn't do anything unwanted otherwise.
 
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485144)
+
+```
+-
+  only_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: extra
+```
+
+* **Change:** Remove branch filter from `extra` job.
+* **Expected/Why:** `release` because we're still on a release branch, `test` by default, `extra` because we just removed its constraint.
+* **Result:** Success! Man ... now that this is done it looks pretty simple. Let's merge this back in and test master again.
+
 <!-- For easy copy/paste:
 
 ##
