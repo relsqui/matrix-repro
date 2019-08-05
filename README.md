@@ -300,11 +300,15 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 ## only x3 (nightly, full)
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485386)
 
 * **Change:** Replace the nightly tag and add `[full ci]`.
 * **Expected/Why:** `nightly` and `test` run for the same reasons as above, `extra` runs because of commit flag.
-* **Result:**  Oops forgot what I was doing and didn't add the commit flag, let me do that one more time ...
+* **Result:**  Oops forgot what I was doing and didn't add the commit flag, let me do that one more time ... whoa weird.
+  * Okay, so. [First time](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485346) it did the expected thing without the commit flag (the nightly job fails because I deleted the job while it was queued, that's nothing to be concerned about).
+  * I added the commit flag and pushed again, but this time forgot to push tags so it just [ran like a master build](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485382) with `[full ci]` on, which is fine.
+  * But then I pushed tags and it did the [same thing](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485386), without running the `nightly` job?
+  * Let me try that again getting all the parts right on a fresh commit to verify.
 
 <!-- For easy copy/paste:
 
