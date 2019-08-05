@@ -312,7 +312,7 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 ## only x3 (nightly, full, take 2)
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485472)
 
 * **Change:** Added `[full ci]`, pushed the `nightly` tag, and did a `push --tags` the first time this time.
 * **Expected/Why:** I want `nightly`, `test`, and `extra`, but given the above I think I might just get `test` and `extra`? I'm not sure which of those outcomes would be more confusing.
