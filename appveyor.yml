@@ -36,22 +36,10 @@ for:
     only:
       - master
       - /^feat.*/
-  skip_commits:
-    message: /\[full ci\]/
-  matrix:
-    only:
-      - JOB_NAME: test
-
--
-  branches:
-    only:
-      - master
-      - /^feat.*/
   only_commits:
     message: /\[full ci\]/
   matrix:
     only:
-      - JOB_NAME: test
       - JOB_NAME: extra
 
 
