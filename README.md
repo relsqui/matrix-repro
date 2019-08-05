@@ -235,7 +235,7 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 ## only x3 (nightly)
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26484892)
 
 * **Change:** Deleted previous `nightly` tag, recreated, and pushed it.
 * **Expected/Why:** `nightly` runs (because we hit that block), `test` runs (by default), `extra` does not.
