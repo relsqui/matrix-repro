@@ -241,6 +241,14 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `nightly` runs (because we hit that block), `test` runs (by default), `extra` does not.
 * **Result:** Also success! Couple more cases to try, the release branch and then both of these special cases with the `[full ci]` addition (although I'm feeling more confident about the result of that now).
 
+## only x3 (release)
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485061)
+
+* **Change:** Cut a `release-x` branch and push.
+* **Expected/Why:** `release` job runs because of that special block, `test` runs by default, nothing else.
+* **Result:** Success!
+
 <!-- For easy copy/paste:
 
 ##
