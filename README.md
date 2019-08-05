@@ -233,6 +233,14 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `test` and `extra` both run, if Owen's right about how this works.
 * **Result:** Success! Finally! Now to verify the other special cases.
 
+## only x3 (nightly)
+
+[Appveyor run.]()
+
+* **Change:** Deleted previous `nightly` tag, recreated, and pushed it.
+* **Expected/Why:** `nightly` runs (because we hit that block), `test` runs (by default), `extra` does not.
+* **Result:** Also success! Couple more cases to try, the release branch and then both of these special cases with the `[full ci]` addition (although I'm feeling more confident about the result of that now).
+
 <!-- For easy copy/paste:
 
 ##
