@@ -288,8 +288,15 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 * **Change:** Add `[full ci]` to the above.
 * **Expected/Why:** `test` and `extra` run.
-* **Result:** TBD, committing to test.
+* **Result:** Yep, works. Let's double-check the tag but I'm feeling confident this is solved.
 
+## only x3 (nightly, no branch constraint)
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485297)
+
+* **Change:** Replace the nightly tag.
+* **Expected/Why:** `nightly` because of the special block and `test` by default.
+* **Result:** Yup. Last test, breaking the tag again.
 
 <!-- For easy copy/paste:
 
