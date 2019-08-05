@@ -298,6 +298,14 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `nightly` because of the special block and `test` by default.
 * **Result:** Yup. Last test, breaking the tag again.
 
+## only x3 (nightly, full)
+
+[Appveyor run.]()
+
+* **Change:** Replace the nightly tag and add `[full ci]`.
+* **Expected/Why:** `nightly` and `test` run for the same reasons as above, `extra` runs because of commit flag.
+* **Result:**  Oops forgot what I was doing and didn't add the commit flag, let me do that one more time ...
+
 <!-- For easy copy/paste:
 
 ##
