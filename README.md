@@ -206,7 +206,7 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 ## only/only/only
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26484714)
 
 ```
 -
@@ -225,6 +225,13 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** I forgot to think of an expectation before actually trying it.
 * **Result:** Only `test` ran, so far so good again.
 
+## only x3 [full ci]
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26484856)
+
+* **Change:** No change, just adding `[full ci]` to the above.
+* **Expected/Why:** `test` and `extra` both run, if Owen's right about how this works.
+* **Result:** Success! Finally! Now to verify the other special cases.
 
 <!-- For easy copy/paste:
 
