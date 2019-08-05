@@ -310,6 +310,14 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
   * But then I pushed tags and it did the [same thing](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485386), without running the `nightly` job?
   * Let me try that again getting all the parts right on a fresh commit to verify.
 
+## only x3 (nightly, full, take 2)
+
+[Appveyor run.]()
+
+* **Change:** Added `[full ci]`, pushed the `nightly` tag, and did a `push --tags` the first time this time.
+* **Expected/Why:** I want `nightly`, `test`, and `extra`, but given the above I think I might just get `test` and `extra`? I'm not sure which of those outcomes would be more confusing.
+* **Result:** I got all three! Well, that's preferable at least, but it implies something kinda weird happens when the commit and the tag get pushed separately.
+
 <!-- For easy copy/paste:
 
 ##
