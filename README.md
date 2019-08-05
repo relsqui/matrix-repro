@@ -204,6 +204,28 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `test` and `extra` run, following the second block.
 * **Result:** Only `extra` ran. :(
 
+## only/only/only
+
+[Appveyor run.]()
+
+```
+-
+  branches:
+    only:
+      - master
+      - /^feat.*/
+  only_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: extra
+```
+
+* **Change:** Per Owen's suggestion in my Appveyor ticket, remove the second block and only specify the behavior for the `extra` job. I had to double-check that I hadn't already tried this; it's almost exactly [except/only/only](#exceptonlyonly) but I hadn't yet switched to opting branches in yet. I'm starting to understand that the way I'm thinking about this (as some kind of selection/action combination) is incorrect; they're _all_ just selections.
+* **Expected/Why:** I forgot to think of an expectation before actually trying it.
+* **Result:** Only `test` ran, so far so good again.
+
+
 <!-- For easy copy/paste:
 
 ##
