@@ -249,6 +249,14 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `release` job runs because of that special block, `test` runs by default, nothing else.
 * **Result:** Success!
 
+## only x3 (release, `[full ci]`)
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485095)
+
+* **Change:** Same as above but with `[full ci]`.
+* **Expected/Why:** `release` and `test` run for the same reasons as before, `extra` also runs.
+* **Result:** Oh wait no, `extra` doesn't run in this case because I told it not to. Given the way it's now configured, I think I can remove that branch constraint and let people have that if they want to; shouldn't do anything unwanted otherwise.
+
 <!-- For easy copy/paste:
 
 ##

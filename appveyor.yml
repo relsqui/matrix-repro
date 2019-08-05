@@ -32,10 +32,6 @@ for:
       - JOB_NAME: nightly
 
 -
-  branches:
-    only:
-      - master
-      - /^feat.*/
   only_commits:
     message: /\[full ci\]/
   matrix:
