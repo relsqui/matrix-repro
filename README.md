@@ -284,7 +284,7 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 
 ## only x3 (master, `[full ci]` without branch constraint)
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485236)
 
 * **Change:** Add `[full ci]` to the above.
 * **Expected/Why:** `test` and `extra` run.
