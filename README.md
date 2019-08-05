@@ -257,7 +257,7 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Expected/Why:** `release` and `test` run for the same reasons as before, `extra` also runs.
 * **Result:** Oh wait no, `extra` doesn't run in this case because I told it not to. Given the way it's now configured, I think I can remove that branch constraint and let people have that if they want to; shouldn't do anything unwanted otherwise.
 
-##
+## only x3 (release, no `extra` constraint)
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485144)
 
@@ -273,6 +273,23 @@ I have a couple of ideas for where to go next (try overtly excluding `test` for 
 * **Change:** Remove branch filter from `extra` job.
 * **Expected/Why:** `release` because we're still on a release branch, `test` by default, `extra` because we just removed its constraint.
 * **Result:** Success! Man ... now that this is done it looks pretty simple. Let's merge this back in and test master again.
+
+## only x3 (master, no `extra` constraint)
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26485200)
+
+* **Change:** Merge the above back to master.
+* **Expected/Why:** `test` and `extra` run for the same reasons they did before.
+* **Result:** Oh wait no I didn't even tell it to run `extra`. Just `test`. That's fine.
+
+## only x3 (master, `[full ci]` without branch constraint)
+
+[Appveyor run.]()
+
+* **Change:** Add `[full ci]` to the above.
+* **Expected/Why:** `test` and `extra` run.
+* **Result:** TBD, committing to test.
+
 
 <!-- For easy copy/paste:
 
