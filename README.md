@@ -102,6 +102,18 @@ JOB_NAME: extra Write-Host APPVEYOR_REPO_TAG: false Write-Host APPVEYOR_REPO_COM
 * **Expected/Why:** Same as above, and maybe also the logic actually works now?
 * **Result:** Variables are correct, logic still failing. This is gonna be something really silly, isn't it.
 
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547819)
+
+```
+      Write-Host "is commit message like '*[full ci]*'? ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*[full ci]*')";
+```
+
+* **Change:** Applying what we learned about string interpolation of boolean expressions a minute ago, let's check the output of that part of the logic specifically. It's the more complicated condition and I'm wondering if I'm missing a syntax thing, like single/double quotes or the brackets being meaningful (although that should be a blob, not a regex). While I'm here, I also added some parens around this condition in the actual test, on the offchance `x -or y -like z` doesn't do what I expect.
+* **Expected/Why:** This is supposed to be false, but it's not working, so maybe it's true!
+* **Result:** That didn't work at all, I don't think the expression interpolation thing works in quotes. :sweat_smile: This kind of thing is easier to test locally though, so let me jam on syntax in a shell for a sec. (Also, the extra parens didn't fix it either, so I'm taking them back out for tidiness.)
+
 
 <!-- For easy copy/paste:
 
