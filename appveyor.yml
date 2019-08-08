@@ -50,7 +50,10 @@ for:
     message: /\[full ci\]/
   matrix:
     only:
-      - IS_EXTRA: true
+      - JOB_NAME: extra1
+      - JOB_NAME: extra2
+      - JOB_NAME: extra3
+      - JOB_NAME: extra4
 
 
 branches:

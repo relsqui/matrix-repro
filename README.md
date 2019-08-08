@@ -433,6 +433,16 @@ init:
 * **Expected/Why:** Hopefully, no change in behavior from the above at all. This commit specifically should just build `test` because it's on master and didn't request full ci.
 * **Result:** So far so good. Let's test `[full ci]` and then a release branch with and without a tag.
 
+## [full ci] with flag management
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26568364)
+
+* **Change:** Same code as the above with `[full ci]` applied.
+* **Expected/Why:** `test` and all the `extra` jobs run.
+* **Result:** Just `test`. :cry:
+
+That's kinda weird. This part worked fine when I was naming the jobs. What happens if I name all of them instead of using the group variable? (This bodes ill for my shortcut, though.)
+
 <!-- For easy copy/paste:
 
 ##
