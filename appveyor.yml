@@ -47,7 +47,7 @@ branches:
     - /^feat.*/
     - nightly
 
-build_script:
+init:
 - ps: >-
     if ($env:JOB_NAME -eq "extra") {
       # job will start on any release branch build, but it should only run on tags or by request
@@ -58,4 +58,5 @@ build_script:
       }
     }
 
+build_script:
 - ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC).";

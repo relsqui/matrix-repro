@@ -284,7 +284,35 @@ Build was forcibly terminated
 Build success
 ```
 
-So it did catch the condition it was supposed to, it just then proceeded into the main job anyway. Curious. I'm treating `Exit-AppveyorBuild` as an immediate return or exit statement but maybe I shouldn't, maybe it decides whether to run the whole script as one. Let's split that up.
+So it did catch the condition it was supposed to, it just then proceeded into the main job anyway. Curious. I'm treating `Exit-AppveyorBuild` as an immediate return or exit statement but maybe I shouldn't, maybe it decides whether to run the whole script as one.
+
+## split condition from main execution
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548662)
+
+```
+- ps: >-
+    if ($env:JOB_NAME -eq "extra") {
+      # job will start on any release branch build, but it should only run on tags or by request
+      Write-Host "is commit message like '*`[full ci`]*'?" ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*');
+      if (-not (($env:APPVEYOR_REPO_TAG -like 'True') -or ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*'))) {
+        Write-Host "Not a release candidate and full ci was not requested, bailing.";
+        Exit-AppveyorBuild;
+      }
+    }
+
+- ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC)."
+```
+
+* **Change:** Put the bail test in a different one from the code we want to execute if we don't bail.
+* **Expected/Why:** Stopping after the bailout. This isn't really a Powershell script I'm writing, it's still a yaml file, some of whose string entries are Powershell scripts.
+* **Result:** Effing finally.
+
+```
+Not a release candidate and full ci was not requested, bailing.
+Build was forcibly terminated
+Build success
+```
 
 <!-- For easy copy/paste:
 
