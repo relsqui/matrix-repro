@@ -469,6 +469,13 @@ Ooh! Had an idea while typing out a question for Appveyor. Maybe this is a boole
 
 Yeah, we totally both set and test booleans in yaml and the real config without problems. Well ... still, easy to check. Let's make them all explicitly strings, that's easy enough.
 
+## boolean strings on purpose this time
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26569312)
+
+* **Change:** Added single quotes around `true` for all the `IS_EXTRA` uses.
+* **Expected/Why:** Maybe the extra jobs would actually run with `[full ci]`?
+* **Result:** Nah. Let's go ahead and [ask Appveyor about it](https://help.appveyor.com/discussions/questions/40351-why-did-one-of-these-commit-filters-work-and-not-the-other).
 
 <!-- For easy copy/paste:
 
