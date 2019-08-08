@@ -68,7 +68,7 @@ build_script:
 
 ## examine the environment
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547700)
 
 ```
     Write-Host "JOB_NAME: $env:JOB_NAME"
@@ -90,9 +90,18 @@ JOB_NAME: extra Write-Host APPVEYOR_REPO_TAG: false Write-Host APPVEYOR_REPO_COM
  Write-Host Running extra job (the one that should only run by request).
  ```
 
- All of that is _output_! I think the lines are getting run together here -- I'm not sure if Powershell itself requires semicolons for multi-line blocks, but I think defining it in a yaml file on Appveyor might.
+ All of that is _output_! I think the lines are getting run together here -- I'm not sure if Powershell itself requires semicolons for multi-line blocks, but I think defining it in a yaml file on Appveyor might. (Shoutout to my goofy bash side project that involves eval'ing a lot of multiline bash strings, thought of this because I saw that problem there.)
 
  As a bonus, that `if True` at the beginning tells me that the job name condition is working; it's evaluating `($env:JOB_NAME -eq 'extra')` which is a wild thing to be able to accidentally mid-string.
+
+## apply semicolons
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547770)
+
+* **Change:** Just added a semicolon after each Powershell statement.
+* **Expected/Why:** Same as above, and maybe also the logic actually works now?
+* **Result:** Variables are correct, logic still failing. This is gonna be something really silly, isn't it.
+
 
 <!-- For easy copy/paste:
 
