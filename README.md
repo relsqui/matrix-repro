@@ -346,6 +346,14 @@ build_script:
 * **Expected/Why:** The `extra` job fully executes, along with `test` and `release`.
 * **Result:** Yep.
 
+## tag on release branch
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548774)
+
+* **Change:** Made and pushed a lightweight tag on a commit that doesn't request full ci.
+* **Expected/Why:** `extra` runs anyway, since it should pass the check in the `init` block.
+* **Result:** Oh, hm, right. Pushing the tag itself didn't trigger a build at all: `Commit "cdb67cae" skipped as branch "0.1.0" does not match any configuration`. Pushing the actual commit again afterwards does, but it's not a tag build so it doesn't fit the condition (nor should it). Let me refresh my memory about how this works in the real repo.
+
 <!-- For easy copy/paste:
 
 ##
