@@ -58,6 +58,15 @@ build_script:
 * **Expected/Why:** The `test` and `release` jobs run as usual; the `extra` job starts but bails because of the check in the build script.
 * **Result:** Typo in the powershell (`not` should be `-not`), so the `extra` job errored and then actually executed. Learned a thing about powershell not bailing when it doesn't parse, which I guess makes sense, bash is like that too.
 
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547629)
+
+* **Change:** Just fixed that typo.
+* **Expected/Why:** Same as before for the same reasons.
+* **Result:** Huh. The extra job still runs? Why?
+
+
 <!-- For easy copy/paste:
 
 ##
