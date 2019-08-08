@@ -314,6 +314,30 @@ Build was forcibly terminated
 Build success
 ```
 
+## put the bailout condition in the init section
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548698/job/jj3wxfi9k9msstns)
+
+```
+init:
+- ps: >-
+    if ($env:JOB_NAME -eq "extra") {
+      # job will start on any release branch build, but it should only run on tags or by request
+      Write-Host "is commit message like '*`[full ci`]*'?" ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*');
+      if (-not (($env:APPVEYOR_REPO_TAG -like 'True') -or ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*'))) {
+        Write-Host "Not a release candidate and full ci was not requested, bailing.";
+        Exit-AppveyorBuild;
+      }
+    }
+
+build_script:
+- ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC).";
+```
+
+* **Change:** Doing that reminded me that in our actual config, we do that kind of test in the `init` section since it happens way earlier (in real time) than the build script. Let's do that here too.
+* **Expected/Why:** Same as previous, shouldn't be a functional change.
+* **Result:** Same as previous. So now we can get down to testing the actual cases this is supposed to work in.
+
 <!-- For easy copy/paste:
 
 ##
