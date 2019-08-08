@@ -469,6 +469,7 @@ Ooh! Had an idea while typing out a question for Appveyor. Maybe this is a boole
 
 Yeah, we totally both set and test booleans in yaml and the real config without problems. Well ... still, easy to check. Let's make them all explicitly strings, that's easy enough.
 
+
 <!-- For easy copy/paste:
 
 ##
