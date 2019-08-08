@@ -338,6 +338,14 @@ build_script:
 * **Expected/Why:** Same as previous, shouldn't be a functional change.
 * **Result:** Same as previous. So now we can get down to testing the actual cases this is supposed to work in.
 
+## full ci on release
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548722)
+
+* **Change:** No code change, just making sure `[full ci]` still works as intended on the release branch.
+* **Expected/Why:** The `extra` job fully executes, along with `test` and `release`.
+* **Result:** Yep.
+
 <!-- For easy copy/paste:
 
 ##
