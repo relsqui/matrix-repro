@@ -362,6 +362,14 @@ build_script:
 * **Expected/Why:** `extra` job runs fully along with the others.
 * **Result:** Yep! I think that's all the cases we need to test on the release branch, so let's go back to master and make sure we didn't break anything.
 
+## back on master
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548915)
+
+* **Change:** Merge in all that change we made on the release branch.
+* **Expected/Why:** On the merge commit on master, only `test` runs, since we're not invoking any of the special cases. `extra` shouldn't even trigger.
+* **Result:** Indeed.
+
 <!-- For easy copy/paste:
 
 ##
