@@ -57,4 +57,5 @@ build_script:
         Exit-AppveyorBuild;
       }
     }
-    Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC).";
+
+- ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC).";

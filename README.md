@@ -263,6 +263,29 @@ System.String
 
 Well then.
 
+## string booleans
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548574)
+
+```
+-      if (-not (($env:APPVEYOR_REPO_TAG) # ...
++      if (-not (($env:APPVEYOR_REPO_TAG -like 'True') # ...
+```
+
+* **Change:** Treat the tag variable as a string instead of a powershell boolean.
+* **Expected/Why:** At this point who knows what to expect?! Nah jk I still think this'll work. `test` and `release` run normally, `extra` catches and bails.
+* **Result:** ... oh, interesting.
+
+```
+is commit message like '*[full ci]*'? False
+Not a release candidate and full ci was not requested, bailing.
+Running extra job (the one that should only run by request).
+Build was forcibly terminated
+Build success
+```
+
+So it did catch the condition it was supposed to, it just then proceeded into the main job anyway. Curious. I'm treating `Exit-AppveyorBuild` as an immediate return or exit statement but maybe I shouldn't, maybe it decides whether to run the whole script as one. Let's split that up.
+
 <!-- For easy copy/paste:
 
 ##
