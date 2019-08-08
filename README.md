@@ -3,28 +3,22 @@
 * [Full build history for this repo.](https://ci.appveyor.com/project/relsqui/matrix-repro/history)
 * [Build matrix documentation.](https://www.appveyor.com/docs/build-configuration/#build-matrix)
 * [Commit filtering documentation.](https://www.appveyor.com/docs/how-to/filtering-commits/)
+
 ---
-* [First page of notes.](initial-setup.md)
 
-Here's the full set of jobs defined in appveyor.yml for this repo:
+* [Notes on initial setup of the Appveyor config in this repo.](initial-setup.md)
 
-```
-environment:
-  matrix:
-  - JOB_NAME: test
-    JOB_DESC: "the one that should run every time"
+---
 
-  - JOB_NAME: release
-    JOB_DESC: "the one that should run on the release branch"
+I realized after deploying my original config solution that I need non-nightly tags (releases, in the real case) to get a full build too, so now I'm going to work on that.
 
-  - JOB_NAME: nightly
-    JOB_DESC: "the one that should run on the nightly tag"
+At config execution time we don't know whether we're building from a tag -- at least, I don't think it gives us any tools for that. But release tags are on release branches, so we can enable the extra jobs for the release branch and just have them quick-pass if the tag isn't set. Let's try it!
 
-  - JOB_NAME: extra
-    JOB_DESC: "the one that should only run by request"
-```
+---
 
-And here are the special cases defined in the `for` block:
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547242)
 
 ```
 for:
@@ -35,19 +29,27 @@ for:
   matrix:
     only:
       - JOB_NAME: release
+      - JOB_NAME: extra
 
--
-  branches:
-    only:
-      - nightly
-  matrix:
-    only:
-      - JOB_NAME: nightly
+# ...
+
+build_script:
+- ps: >-
+    if ($env:JOB_NAME -eq "extra") {
+      # job will start on any release branch build, but it should only actually
+      # execute on release candidate tags or by request
+      if (not ($env:APPVEYOR_REPO_TAG -or $env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*[full ci]*')) {
+        Write-Host "Not a release candidate and full ci was not requested, bailing."
+        Exit-AppveyorBuild
+      }
+    }
+    Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC).
 ```
 
-[Here are the notes](initial-setup.md) from the initial setup of the appveyor config file. I realized after deploying that solution that I need non-nightly tags (releases, in the real case) to get a full build too, so now I'm going to work on that.
+* **Change:** Added the `extra` job to the release section, and then added a check in the build script which bails out of that job unless it's actually supposed to run (because we're building a release candidate or we requested a full run).
+* **Expected/Why:** No change because we're building on master.
+* **Result:** No change, only `test` ran.
 
-At config execution time we don't know whether we're building from a tag -- at least, I don't think it gives us any tools for that. But release tags are on release branches, so we can enable the extra jobs for the release branch and just have them quick-pass if the tag isn't set.
 
 <!-- For easy copy/paste:
 
