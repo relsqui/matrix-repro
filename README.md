@@ -140,6 +140,42 @@ is stuff like bar? True
 
 Should've tested that before. [Powershell wildcards support square brackets.](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_wildcards?view=powershell-6) I was even reading that page earlier, I just didn't look past what I was looking for (about `*`), serves me right really. Let's just ... escape those.
 
+## escape square brackets
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548016)
+
+* **Change:** Escaped the square brackets in the test and the print with graves.
+* **Expected/Why:** Condition reports False and logic works.
+* **Result:** WTH, the condition is reported as False and the logic still doesn't work? Something to do with the compound logic maybe? Let's test that locally too.
+
+```
+PS /Users/finnre> write-host $env:stuff
+foo [bar] baz
+PS /Users/finnre> write-host $env:wildcard
+*`[bar`]*
+PS /Users/finnre> write-host $env:stuff -like $env:wildcard
+foo [bar] baz -like *`[bar`]*
+PS /Users/finnre> write-host ($env:stuff -like $env:wildcard)
+True
+PS /Users/finnre> write-host (False -or $env:stuff -like $env:wildcard)
+
+PS /Users/finnre> write-host (False -or ($env:stuff -like $env:wildcard))
+
+```
+
+... what??
+
+```
+PS /Users/finnre> write-host (True -or ($env:stuff -like $env:wildcard)) 
+
+PS /Users/finnre> write-host (('foo' -eq 'foo') -or ($env:stuff -like $env:wildcard))
+True
+PS /Users/finnre> write-host ((True) -or ($env:stuff -like $env:wildcard))
+True
+```
+
+Oh. The parens really did matter. Kinda weird, but fine. I like type systems because they force you to intentionally resolve ambiguity, I guess I can get behind mandatory booleans in complex boolean logic for the same reason.
+
 <!-- For easy copy/paste:
 
 ##
