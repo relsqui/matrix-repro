@@ -176,6 +176,93 @@ True
 
 Oh. The parens really did matter. Kinda weird, but fine. I like type systems because they force you to intentionally resolve ambiguity, I guess I can get behind mandatory booleans in complex boolean logic for the same reason.
 
+## parens for everybody
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548150)
+
+* **Change:** Added parens about each condition in the compound expression.
+* **Expected/Why:** It does the thing!
+* **Result:** What the hell it still doesn't do the thing. Back to the shell.
+
+```
+PS /Users/finnre> $env:truthy = ('foo' -eq 'foo')
+PS /Users/finnre> $env:truthy
+True
+PS /Users/finnre> write-host (-not (($env:truthy) -or ($env:stuff -like $env:wildcard)))
+False
+PS /Users/finnre> write-host (-not (($env:truthy) -or ('some other string' -like $env:wildcard)))
+False
+PS /Users/finnre> $env:falsey = ('foo' -eq 'bar')
+PS /Users/finnre> $env:falsey
+False
+PS /Users/finnre> write-host (-not (($env:falsey) -or ('some other string' -like $env:wildcard)))
+False
+```
+
+... okay, I was with you up until that last one, Powershell. Those interior conditions should both be false, so the `-or` should be false, so the `-not` should be true. Which of those expectations is wrong?
+
+```
+PS /Users/finnre> write-host ($env:falsey)
+False
+PS /Users/finnre> write-host ('some other string' -like $env:wildcard)
+False
+PS /Users/finnre> write-host (($env:falsey) -or ('some other string' -like $env:wildcard))
+True
+```
+
+UM???
+
+```
+PS /Users/finnre> write-host (1 -eq 2)
+False
+PS /Users/finnre> write-host ((1 -eq 2) -or (1 -eq 2))
+False
+```
+
+Okay so boolean logic isn't just, you know, broken. Do I ... need to quote my string var or something? I don't see how that could produce the output I'm seeing but it's worth checking. (I'll spare you the copy/paste, that wasn't it.)
+
+... maybe my expressions are producing more complex outputs that are getting cast to booleans in some inconsistent way? What does `-like` actually return? [Docs say](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_comparison_operators?view=powershell-6) `Returns true when string matches wildcard pattern` which is what I expected.
+
+... but later on that same page:
+
+> The equality operators (`-eq`, `-ne`) return a value of TRUE or the matches when one or more of the input values is identical to the specified pattern
+
+_Or_ the matches?!
+
+```
+PS> "abc" -ne "abc"
+False
+```
+
+```
+PS> "abc", "def" -ne "abc"
+def
+```
+
+Oh when you give it more than one, all right, fair enough. Am I doing that by mistake maybe? That's the kind of thing I was looking for.
+
+Oh. Oh oh oh oh. I think I know what's going on. I think I got lucky enough to make the same mistake in my local shell testing and my config -- otherwise this would be a lot _more_ confusing.
+
+I bet `$env:APPVEYOR_REPO_TAG` is a _string_. And as an artifact of me not knowing what I was doing when I was setting it:
+
+```
+PS /Users/finnre> write-host $env:falsey
+False
+PS /Users/finnre> write-host ($env:falsey -like 'false')
+True
+PS /Users/finnre> write-host ($env:falsey -like 'False')
+True
+```
+
+That's not weird, `-like` is case insensitive by default. And after some googling:
+
+```
+PS /Users/finnre> write-host $env:falsey.GetType()
+System.String
+```
+
+Well then.
+
 <!-- For easy copy/paste:
 
 ##
