@@ -50,6 +50,13 @@ build_script:
 * **Expected/Why:** No change because we're building on master.
 * **Result:** No change, only `test` ran.
 
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547580)
+
+* **Change:** Start a `release-*` branch and do a basic CI run.
+* **Expected/Why:** The `test` and `release` jobs run as usual; the `extra` job starts but bails because of the check in the build script.
+* **Result:** Typo in the powershell (`not` should be `-not`), so the `extra` job errored and then actually executed. Learned a thing about powershell not bailing when it doesn't parse, which I guess makes sense, bash is like that too.
 
 <!-- For easy copy/paste:
 
