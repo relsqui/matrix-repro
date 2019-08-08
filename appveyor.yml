@@ -22,6 +22,7 @@ for:
   matrix:
     only:
       - JOB_NAME: release
+      - JOB_NAME: extra
 
 -
   branches:
@@ -47,4 +48,12 @@ branches:
     - nightly
 
 build_script:
-- ps: Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC)."
+- ps: >-
+    if ($env:JOB_NAME -eq "extra") {
+      # job will start on any release branch build, but it should only run on tags or by request
+      if (not ($env:APPVEYOR_REPO_TAG -or $env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*[full ci]*')) {
+        Write-Host "Not a release candidate and full ci was not requested, bailing."
+        Exit-AppveyorBuild
+      }
+    }
+    Write-Host "Running $env:JOB_NAME job ($env:JOB_DESC)."
