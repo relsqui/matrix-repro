@@ -102,7 +102,7 @@ JOB_NAME: extra Write-Host APPVEYOR_REPO_TAG: false Write-Host APPVEYOR_REPO_COM
 * **Expected/Why:** Same as above, and maybe also the logic actually works now?
 * **Result:** Variables are correct, logic still failing. This is gonna be something really silly, isn't it.
 
-##
+## examine the condition that's most likely to be broken
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547819)
 
@@ -114,6 +114,31 @@ JOB_NAME: extra Write-Host APPVEYOR_REPO_TAG: false Write-Host APPVEYOR_REPO_COM
 * **Expected/Why:** This is supposed to be false, but it's not working, so maybe it's true!
 * **Result:** That didn't work at all, I don't think the expression interpolation thing works in quotes. :sweat_smile: This kind of thing is easier to test locally though, so let me jam on syntax in a shell for a sec. (Also, the extra parens didn't fix it either, so I'm taking them back out for tidiness.)
 
+## more powershell syntax
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547939)
+
+```
+PS /Users/finnre> $env:stuff = 'foo [bar] baz'
+PS /Users/finnre> write-host "is stuff like bar?" ($env:stuff -like '*[bar]*')
+is stuff like bar? True
+```
+
+```
+      Write-Host "is commit message like '*[full ci]*'?" ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*[full ci]*');
+```
+
+* **Change:** Just fixing syntax.
+* **Expected/Why:** This should print the question and then the boolean response, which is still supposed to be `False` but maybe isn't.
+* **Result:** It's `True`! So at least we have the culprit. I bet it's the square brackets. Similarly, this works:
+
+```
+PS /Users/finnre> $env:stuff = 'foo [bar] baz'
+PS /Users/finnre> write-host "is stuff like bar?" ($env:stuff -like '*[foo]*')
+is stuff like bar? True
+```
+
+Should've tested that before. [Powershell wildcards support square brackets.](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_wildcards?view=powershell-6) I was even reading that page earlier, I just didn't look past what I was looking for (about `*`), serves me right really. Let's just ... escape those.
 
 <!-- For easy copy/paste:
 
