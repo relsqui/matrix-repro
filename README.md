@@ -465,6 +465,10 @@ That's kinda weird. This part worked fine when I was naming the jobs. What happe
 
 Reverting this change before I continue.
 
+Ooh! Had an idea while typing out a question for Appveyor. Maybe this is a boolean/string thing again? `true` is a boolean in the yaml spec, but it may not be compared that way. It could be wrong in either direction but I'm going to guess first that we're storing a string and testing a boolean ... wait hang on, we use these in the real repo, don't we?
+
+Yeah, we totally both set and test booleans in yaml and the real config without problems. Well ... still, easy to check. Let's make them all explicitly strings, that's easy enough.
+
 <!-- For easy copy/paste:
 
 ##
