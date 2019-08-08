@@ -461,9 +461,9 @@ That's kinda weird. This part worked fine when I was naming the jobs. What happe
 
 * **Change:** Just the above, not messing with the variables elsewhere yet.
 * **Expected/Why:** Honestly I'll be unhappy if this is different from the above, but checking to see if this actually causes them all to start in the `[full ci]` case.
-* **Result:** Well, okay, at least it's not that. Seriously what the heck though.
+* **Result:** Well, okay, at least it's not that. Seriously what the heck though. This did work before, and the only difference is which variable I'm testing ... isn't it?
 
-Reverting this one before I continue.
+Reverting this change before I continue.
 
 <!-- For easy copy/paste:
 
