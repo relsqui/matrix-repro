@@ -370,6 +370,16 @@ build_script:
 * **Expected/Why:** On the merge commit on master, only `test` runs, since we're not invoking any of the special cases. `extra` shouldn't even trigger.
 * **Result:** Indeed.
 
+## nightly on master
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26549079)
+
+* **Change:** Pushed the `nightly` tag on master (and took the opportunity to confirm my theory that `git push` and then `git push --tags` does what I want).
+* **Expected/Why:** The `extra` job still doesn't trigger, even though it's a tag build, because it's filtered out at the branch name level.
+* **Result:** Yup, just `test` and `nightly`.
+
+I'm feeling pretty comfortable with this solution at this point. Let's go implement it in the main repo.
+
 <!-- For easy copy/paste:
 
 ##
