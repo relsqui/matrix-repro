@@ -16,7 +16,7 @@ At config execution time we don't know whether we're building from a tag -- at l
 
 ---
 
-##
+## adding a conditional filter
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547242)
 
@@ -50,15 +50,15 @@ build_script:
 * **Expected/Why:** No change because we're building on master.
 * **Result:** No change, only `test` ran.
 
-##
+## test filter on a release branch
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547580)
 
 * **Change:** Start a `release-*` branch and do a basic CI run.
 * **Expected/Why:** The `test` and `release` jobs run as usual; the `extra` job starts but bails because of the check in the build script.
-* **Result:** Typo in the powershell (`not` should be `-not`), so the `extra` job errored and then actually executed. Learned a thing about powershell not bailing when it doesn't parse, which I guess makes sense, bash is like that too.
+* **Result:** Typo in the Powershell (`not` should be `-not`), so the `extra` job errored and then actually executed. Learned a thing about Powershell not bailing when it doesn't parse, which I guess makes sense, bash is like that too.
 
-##
+## fix powershell typo
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26547629)
 
@@ -66,6 +66,33 @@ build_script:
 * **Expected/Why:** Same as before for the same reasons.
 * **Result:** Huh. The extra job still runs? Why?
 
+## examine the environment
+
+[Appveyor run.]()
+
+```
+    Write-Host "JOB_NAME: $env:JOB_NAME"
+    Write-Host "APPVEYOR_REPO_TAG: $env:APPVEYOR_REPO_TAG"
+    Write-Host "APPVEYOR_REPO_COMMIT_MESSAGE: $env:APPVEYOR_REPO_COMMIT_MESSAGE"
+```
+
+* **Change:** Let's make sure all these variables are what they're supposed to be.
+* **Expected/Why:** On the extra job for this run, they should be `extra`, `false`, and the commit message, respectively.
+* **Result:** Okay this calls for a code block, because what.
+
+```
+JOB_NAME: extra Write-Host APPVEYOR_REPO_TAG: false Write-Host APPVEYOR_REPO_COMMIT_MESSAGE: Let's peek at those environment variables. if True
+  # job will start on any release branch build, but it should only run on tags or by request
+  if (-not ($env:APPVEYOR_REPO_TAG -or $env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*[full ci]*')) {
+    Write-Host "Not a release candidate and full ci was not requested, bailing."
+    Exit-AppveyorBuild
+  }
+ Write-Host Running extra job (the one that should only run by request).
+ ```
+
+ All of that is _output_! I think the lines are getting run together here -- I'm not sure if Powershell itself requires semicolons for multi-line blocks, but I think defining it in a yaml file on Appveyor might.
+
+ As a bonus, that `if True` at the beginning tells me that the job name condition is working; it's evaluating `($env:JOB_NAME -eq 'extra')` which is a wild thing to be able to accidentally mid-string.
 
 <!-- For easy copy/paste:
 
