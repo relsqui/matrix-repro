@@ -443,6 +443,28 @@ init:
 
 That's kinda weird. This part worked fine when I was naming the jobs. What happens if I name all of them instead of using the group variable? (This bodes ill for my shortcut, though.)
 
+## split out extra jobs in the commit message filter block
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26568505)
+
+```
+-
+  only_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - JOB_NAME: extra1
+      - JOB_NAME: extra2
+      - JOB_NAME: extra3
+      - JOB_NAME: extra4
+```
+
+* **Change:** Just the above, not messing with the variables elsewhere yet.
+* **Expected/Why:** Honestly I'll be unhappy if this is different from the above, but checking to see if this actually causes them all to start in the `[full ci]` case.
+* **Result:** Well, okay, at least it's not that. Seriously what the heck though.
+
+Reverting this one before I continue.
+
 <!-- For easy copy/paste:
 
 ##
