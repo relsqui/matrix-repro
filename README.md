@@ -380,6 +380,59 @@ build_script:
 
 I'm feeling pretty comfortable with this solution at this point. Let's go implement it in the main repo.
 
+## manage extra jobs with a flag
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26568240)
+
+```
+  - JOB_NAME: extra1
+    JOB_DESC: "the first one that should only run by request"
+    IS_EXTRA: true
+
+  - JOB_NAME: extra2
+    JOB_DESC: "the second one that should only run by request"
+    IS_EXTRA: true
+
+  - JOB_NAME: extra3
+    JOB_DESC: "the third one that should only run by request"
+    IS_EXTRA: true
+
+  - JOB_NAME: extra4
+    JOB_DESC: "the fourth one that should only run by request"
+    IS_EXTRA: true
+```
+
+```
+for:
+-
+  branches:
+    only:
+      - /^release.*/
+  matrix:
+    only:
+      - JOB_NAME: release
+      - IS_EXTRA: true
+```
+
+```
+-
+  only_commits:
+    message: /\[full ci\]/
+  matrix:
+    only:
+      - IS_EXTRA: true
+```
+
+```
+init:
+- ps: >-
+    if ($env:IS_EXTRA -like 'true') {
+```
+
+* **Change:** Added several extra jobs and managed them with a common flag rather than by name. This is a closer fit to the real repo and I want to test it here first.
+* **Expected/Why:** Hopefully, no change in behavior from the above at all. This commit specifically should just build `test` because it's on master and didn't request full ci.
+* **Result:** So far so good. Let's test `[full ci]` and then a release branch with and without a tag.
+
 <!-- For easy copy/paste:
 
 ##
