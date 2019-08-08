@@ -354,6 +354,14 @@ build_script:
 * **Expected/Why:** `extra` runs anyway, since it should pass the check in the `init` block.
 * **Result:** Oh, hm, right. Pushing the tag itself didn't trigger a build at all: `Commit "cdb67cae" skipped as branch "0.1.0" does not match any configuration`. Pushing the actual commit again afterwards does, but it's not a tag build so it doesn't fit the condition (nor should it). Let me refresh my memory about how this works in the real repo.
 
+## push commit, then tag
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26548863)
+
+* **Change:** Last time, I did a `git push --tags` thinking it would get commit and also tag, which it didn't seem to -- a commit job didn't start. This time I did just `git push` first and then `git push origin 0.1.1` (a new tag I just made), and that worked. This is weirdly finicky. (I suspect `git push --tags` in that second case would also have helped but I'm not too worried about that part right now, that's not in the scope of the problem I'm trying to solve.)
+* **Expected/Why:** `extra` job runs fully along with the others.
+* **Result:** Yep! I think that's all the cases we need to test on the release branch, so let's go back to master and make sure we didn't break anything.
+
 <!-- For easy copy/paste:
 
 ##
