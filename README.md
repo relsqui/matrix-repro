@@ -495,7 +495,7 @@ for:
 
 ## use different variables for `[full ci]` jobs and release-included jobs
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26575853)
 
 ```
   - JOB_NAME: release
