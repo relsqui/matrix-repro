@@ -493,6 +493,38 @@ for:
 * **Expected/Why:** If this works then I need to update my understanding of how this config is applied. If it doesn't, back to the drawing board I guess.
 * **Result:** Ah. That worked. Well then. Let's go back and learn some more about how this works.
 
+## use different variables for `[full ci]` jobs and release-included jobs
+
+[Appveyor run.]()
+
+```
+  - JOB_NAME: release
+    JOB_DESC: "the one that should run on the release branch"
+    START_ON_RELEASE: true
+```
+
+```
+  - JOB_NAME: extra1
+    JOB_DESC: "the first one that should only run by request"
+    IS_EXTRA: true
+    START_ON_RELEASE: true
+```
+
+```
+for:
+-
+  branches:
+    only:
+      - /^release.*/
+  matrix:
+    only:
+      - START_ON_RELEASE: true
+```
+
+* **Change:** If the variable check has to be exclusive between filter blocks, what if we use two different variables to mark the same condition in different places? (This is kind of a hack but it's less hacky than the other alternatives I can think of.)
+* **Expected/Why:** I'm still not sure how Appveyor parses these, so I honestly don't know if this will work or not. If the condition has to be unique, this will work. If the actual selected set of jobs does, it won't, but I don't think that can possibly be true and everything else work the way it does?
+* **Result:** Only `test` ran (with `[full ci]` in the commit message). I don't understand _anything_ any more. Might be time to go home, haha.
+
 <!-- For easy copy/paste:
 
 ##
