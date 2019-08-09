@@ -479,7 +479,7 @@ Yeah, we totally both set and test booleans in yaml and the real config without 
 
 ## does breaking release fix master?
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26575574)
 
 ```
 for:
@@ -491,7 +491,7 @@ for:
 
 * **Change:** I hate that I even typed that heading, but I looked at an older example where `[full ci]` was working on master and apart from breaking out a bunch of individual extra jobs, the only difference was that I'd enabled the extra jobs on the release branch in the interim. So what happens if we comment that out and then run with the flag?
 * **Expected/Why:** If this works then I need to update my understanding of how this config is applied. If it doesn't, back to the drawing board I guess.
-* **Result:** 
+* **Result:** Ah. That worked. Well then. Let's go back and learn some more about how this works.
 
 <!-- For easy copy/paste:
 
