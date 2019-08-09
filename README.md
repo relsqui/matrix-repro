@@ -477,6 +477,22 @@ Yeah, we totally both set and test booleans in yaml and the real config without 
 * **Expected/Why:** Maybe the extra jobs would actually run with `[full ci]`?
 * **Result:** Nah. Let's go ahead and [ask Appveyor about it](https://help.appveyor.com/discussions/questions/40351-why-did-one-of-these-commit-filters-work-and-not-the-other).
 
+## does breaking release fix master?
+
+[Appveyor run.]()
+
+```
+for:
+   matrix:
+     only:
+       - JOB_NAME: release
+       # - IS_EXTRA: 'true'
+```
+
+* **Change:** I hate that I even typed that heading, but I looked at an older example where `[full ci]` was working on master and apart from breaking out a bunch of individual extra jobs, the only difference was that I'd enabled the extra jobs on the release branch in the interim. So what happens if we comment that out and then run with the flag?
+* **Expected/Why:** If this works then I need to update my understanding of how this config is applied. If it doesn't, back to the drawing board I guess.
+* **Result:** 
+
 <!-- For easy copy/paste:
 
 ##
