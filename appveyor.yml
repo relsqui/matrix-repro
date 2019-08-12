@@ -44,17 +44,6 @@ for:
     only:
       - nightly
 
--
-  matrix:
-    only:
-      - IS_EXTRA: true
-  only_commits:
-    message: /\[full ci\]/
-  branches:
-    only:
-      - /^release.*/
-
-
 branches:
   only:
     - master
@@ -65,8 +54,8 @@ branches:
 init:
 - ps: >-
     if ($env:IS_EXTRA -like 'true') {
-      # job will start on any release branch build, but it should only run on tags or by request
-      if (-not (($env:APPVEYOR_REPO_TAG -like 'true') -or ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*'))) {
+      # run extra jobs when asked in the commit message or on any non-nightly tag
+      if (-not ((($env:APPVEYOR_REPO_TAG -like 'true') -and -not ($env:APPVEYOR_REPO_TAG_NAME -like 'nightly')) -or ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*'))) {
         Write-Host "Not a release candidate and full ci was not requested, bailing.";
         Exit-AppveyorBuild;
       }

@@ -535,6 +535,29 @@ Naturally, there's no explicit documentation about how multiple limits (`branche
 
 That said, if I'm wrong, it's the fastest way to get the config I actually want, so let's check real quick.
 
+## only branch + only commit + `[full ci]`
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26646172)
+
+```
+-
+  matrix:
+    only:
+      - IS_EXTRA: true
+  only_commits:
+    message: /\[full ci\]/
+  branches:
+    only:
+      - /^release.*
+```
+
+* **Change:** Specify both a commit message filter and a branch filter, then run with `[full ci]` on master (since that's where we left off with broken behavior).
+* **Expected/Why:** I think this isn't going to work, because it'll look for both conditions and only one will be met, but I'm kinda hoping I'm wrong because it simplifies things in the immediate term.
+* **Result:** Indeed, only `test` ran, which makes my current problem harder but at least I understand why.
+
+Reverting that change and thinking about what to try next.
+
+Seems like if I want a more complex condition than "only here" or "except here," and I can't use an environment variable as a condition (although it sounds like they're working on that), then I have to just not use this mechanism at all and filter in the config file. Annoying but at least easy.
 <!-- For easy copy/paste:
 
 ##
