@@ -558,6 +558,27 @@ That said, if I'm wrong, it's the fastest way to get the config I actually want,
 Reverting that change and thinking about what to try next.
 
 Seems like if I want a more complex condition than "only here" or "except here," and I can't use an environment variable as a condition (although it sounds like they're working on that), then I have to just not use this mechanism at all and filter in the config file. Annoying but at least easy.
+
+## always filter extra jobs manually
+
+[Appveyor run.]()
+
+```
+init:
+- ps: >-
+    if ($env:IS_EXTRA -like 'true') {
+      # run extra jobs when asked in the commit message or on any non-nightly tag
+      if (-not ((($env:APPVEYOR_REPO_TAG -like 'true') -and -not ($env:APPVEYOR_REPO_TAG_NAME -like 'nightly')) -or ($env:APPVEYOR_REPO_COMMIT_MESSAGE -like '*`[full ci`]*'))) {
+        Write-Host "Not a release candidate and full ci was not requested, bailing.";
+        Exit-AppveyorBuild;
+      }
+    }
+```
+
+* **Change:** Removed the `extra` section entirely from the `for` block, and used the above logic to filter jobs instead. Running this with `[full ci]` on master.
+* **Expected/Why:** Unless I messed up my Powershell again, this should actually run all the extra jobs.
+* **Result:** Wh ... that actually didn't even trigger Appveyor at all (like, there's nothing in the event log). Maybe because I amended the commit to add `[full ci]`? I'm pretty sure I've done that before though. Pushing another commit without amending just to see what happens.
+
 <!-- For easy copy/paste:
 
 ##
