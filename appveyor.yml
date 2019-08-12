@@ -7,7 +7,6 @@ environment:
 
   - JOB_NAME: release
     JOB_DESC: "the one that should run on the release branch"
-    START_ON_RELEASE: true
 
   - JOB_NAME: nightly
     JOB_DESC: "the one that should run on the nightly tag"
@@ -15,46 +14,45 @@ environment:
   - JOB_NAME: extra1
     JOB_DESC: "the first one that should only run by request"
     IS_EXTRA: true
-    START_ON_RELEASE: true
 
   - JOB_NAME: extra2
     JOB_DESC: "the second one that should only run by request"
     IS_EXTRA: true
-    START_ON_RELEASE: true
 
   - JOB_NAME: extra3
     JOB_DESC: "the third one that should only run by request"
     IS_EXTRA: true
-    START_ON_RELEASE: true
 
   - JOB_NAME: extra4
     JOB_DESC: "the fourth one that should only run by request"
     IS_EXTRA: true
-    START_ON_RELEASE: true
 
 for:
 -
+  matrix:
+    only:
+      - JOB_NAME: release
   branches:
     only:
       - /^release.*/
-  matrix:
-    only:
-      - START_ON_RELEASE: true
 
 -
-  branches:
-    only:
-      - nightly
   matrix:
     only:
       - JOB_NAME: nightly
+  branches:
+    only:
+      - nightly
 
 -
-  only_commits:
-    message: /\[full ci\]/
   matrix:
     only:
       - IS_EXTRA: true
+  only_commits:
+    message: /\[full ci\]/
+  branches:
+    only:
+      - /^release.*/
 
 
 branches:

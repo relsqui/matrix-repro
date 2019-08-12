@@ -525,6 +525,16 @@ for:
 * **Expected/Why:** I'm still not sure how Appveyor parses these, so I honestly don't know if this will work or not. If the condition has to be unique, this will work. If the actual selected set of jobs does, it won't, but I don't think that can possibly be true and everything else work the way it does?
 * **Result:** Only `test` ran (with `[full ci]` in the commit message). I don't understand _anything_ any more. Might be time to go home, haha.
 
+Okay, after going home and coming back I learned two important things from Appveyor:
+
+* When you put `matrix.only` and `branches.only` in a `for` block, what's happening is "for only these jobs, run on only these branches" and _not_ "for only these branches, run only these jobs." You can specify them in either order which makes this really unclear, and I'm reversing the way I write them in the config immediately.
+
+* _These blocks are ordered_. Given the above, and also how matrix config works and everything else before the actual build scripts, the possibility of these being ordered literally did not occur to me. That does a lot to narrow down the field of how this is supposed to behave.
+
+Naturally, there's no explicit documentation about how multiple limits (`branches.only` but also `only_commits`) interact with each other. I'm guessing they're intersected (has to be on the branch and have the commit message) rather than unioned (either), and also whether or not that's true, I suspect treating it that way will get me a more readable config.
+
+That said, if I'm wrong, it's the fastest way to get the config I actually want, so let's check real quick.
+
 <!-- For easy copy/paste:
 
 ##
