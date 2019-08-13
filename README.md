@@ -649,6 +649,8 @@ Merging this back in to master now.
 
 I think nightly tags might actually be annotated though? (Unlike release tags which definitely are not, ugh.) I could probably review my notes for this but I'm just gonna try it 'cause it's quick.
 
+Yeah [there we go](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26678828). Doesn't warrant its own section. That's enough to wrap up for now.
+
 <!-- For easy copy/paste:
 
 ##
