@@ -599,6 +599,28 @@ Now let's make sure it does the right thing on a release branch.
 * **Expected/Why:** Extra jobs actually run.
 * **Result:** Correct.
 
+## release branch with tag
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26678322)
+
+* **Change:** Make a commit on a release branch without `[full ci]`. Add a new tag (`0.1.2`) and `git push --tags`.
+* **Expected/Why:** Extra jobs actually run, again.
+* **Result:** Er, tag didn't build because the tag name didn't match any config. Huh? I thought this worked before. Let me try making a new tag on the same commit and pushing just the tag?
+
+Did that with `0.1.3` and this time it didn't even pop up in Appveyor at all. ... oh _right_ I haven't pushed the _commit_ yet just the tags, derp. I should read more about how git manages tags so it'll be easier to remember how they work.
+
+Okay, made and pushed a new commit (just removing the empty file from before), tagged `0.1.4` and pushed tags. That started a regular branch build and a tag build (which is normal, if silly).
+
+The regular branch build started extra jobs and then failed, which is correct. The tag build actually ran the extra jobs. Perfect.
+
+Left to test:
+
+* `[full ci]` on a release branch
+* regular master build
+* `nightly` tag from master
+
+My "I could automate this" sense is tingling but it's probably not worth the trouble. If I were _going_ to go to the trouble I should do it with the real config anyway, copied into a test repo. (Actually, huh, that's not a bad idea.)
+
 <!-- For easy copy/paste:
 
 ##
