@@ -561,7 +561,7 @@ Seems like if I want a more complex condition than "only here" or "except here,"
 
 ## always filter extra jobs manually
 
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26649476)
 
 ```
 init:
@@ -578,6 +578,10 @@ init:
 * **Change:** Removed the `extra` section entirely from the `for` block, and used the above logic to filter jobs instead. Running this with `[full ci]` on master.
 * **Expected/Why:** Unless I messed up my Powershell again, this should actually run all the extra jobs.
 * **Result:** Wh ... that actually didn't even trigger Appveyor at all (like, there's nothing in the event log). Maybe because I amended the commit to add `[full ci]`? I'm pretty sure I've done that before though. Pushing another commit without amending just to see what happens.
+
+Yeah, weird, that did it. Huh. Anyway, once it went through it worked. Choosing not to worry about why the hook didn't go through unless I have trouble with it again.
+
+Now let's make sure it does the right thing on a release branch.
 
 <!-- For easy copy/paste:
 
