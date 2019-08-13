@@ -583,6 +583,14 @@ Yeah, weird, that did it. Huh. Anyway, once it went through it worked. Choosing 
 
 Now let's make sure it does the right thing on a release branch.
 
+## release branch, no request for extra
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26674716)
+
+* **Change:** On a release branch, push a commit without a tag or `[full ci]`.
+* **Expected/Why:** Extra jobs don't run.
+* **Result:** Er, rather, extra jobs run but bail out, which is correct. Let's test the request and tag cases and then pop back to master and do the same there.
+
 <!-- For easy copy/paste:
 
 ##
