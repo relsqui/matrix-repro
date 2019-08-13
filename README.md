@@ -631,6 +631,14 @@ My "I could automate this" sense is tingling but it's probably not worth the tro
 
 Merging this back in to master now.
 
+## plain master run
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26678608)
+
+* **Change:** Merged the release branch back to master and pushed it with no special flags.
+* **Expected/Why:** The extra jobs fire but bail, only the test job actually runs.
+* **Result:** Yep yep. Okay, let's do the nightly and then fix up the real config.
+
 <!-- For easy copy/paste:
 
 ##
