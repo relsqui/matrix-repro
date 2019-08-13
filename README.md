@@ -639,6 +639,16 @@ Merging this back in to master now.
 * **Expected/Why:** The extra jobs fire but bail, only the test job actually runs.
 * **Result:** Yep yep. Okay, let's do the nightly and then fix up the real config.
 
+## nightly tag
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26678683)
+
+* **Change:** Okay let's see if I can remember how this works for once. Made a commit on master, pushed it, made the tag, pushed that.
+* **Expected/Why:** Nightly and test jobs run, extra jobs start and then bail.
+* **Result:** ... the nightly job didn't run?! Like, a tag build started but the nightly didn't run.
+
+I think nightly tags might actually be annotated though? (Unlike release tags which definitely are not, ugh.) I could probably review my notes for this but I'm just gonna try it 'cause it's quick.
+
 <!-- For easy copy/paste:
 
 ##
