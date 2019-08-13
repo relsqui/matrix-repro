@@ -19,14 +19,6 @@ environment:
     JOB_DESC: "the second one that should only run by request"
     IS_EXTRA: true
 
-  - JOB_NAME: extra3
-    JOB_DESC: "the third one that should only run by request"
-    IS_EXTRA: true
-
-  - JOB_NAME: extra4
-    JOB_DESC: "the fourth one that should only run by request"
-    IS_EXTRA: true
-
 for:
 -
   matrix:

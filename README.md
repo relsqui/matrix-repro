@@ -621,6 +621,16 @@ Left to test:
 
 My "I could automate this" sense is tingling but it's probably not worth the trouble. If I were _going_ to go to the trouble I should do it with the real config anyway, copied into a test repo. (Actually, huh, that's not a bad idea.)
 
+## `[full ci]` on release branch
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26678529)
+
+* **Change:** No code changes, same as previous but with `[full ci]`.
+* **Expected/Why:** All extra jobs run again because they still pass the filter.
+* **Result:** Worked. Also, even though the actual runs are short, waiting for all these extra jobs to queue is tedious, I think I'll cut it down to two (since the thing I'm really testing here is just managing the plurality).
+
+Merging this back in to master now.
+
 <!-- For easy copy/paste:
 
 ##
