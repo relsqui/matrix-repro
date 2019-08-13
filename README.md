@@ -591,6 +591,14 @@ Now let's make sure it does the right thing on a release branch.
 * **Expected/Why:** Extra jobs don't run.
 * **Result:** Er, rather, extra jobs run but bail out, which is correct. Let's test the request and tag cases and then pop back to master and do the same there.
 
+## release branch, full ci
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26674785)
+
+* **Change:** Release branch commit with `[full ci]`.
+* **Expected/Why:** Extra jobs actually run.
+* **Result:** Correct.
+
 <!-- For easy copy/paste:
 
 ##
