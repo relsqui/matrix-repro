@@ -8,6 +8,7 @@ This repo is for experimenting with Appveyor config quickly. Here are some thing
 
 1. [Initial setup of the Appveyor config in this repo.](01-initial-setup.md)
 2. [Managing multiple `extra` jobs.](02-multiple-extra-jobs.md)
+3. [Stop build on packaging failure.](03-stop-on-failure.md)
 
 I will add more files as I do more experiments.
 

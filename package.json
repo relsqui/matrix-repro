@@ -1,0 +1,24 @@
+{
+  "name": "matrix-repro",
+  "version": "1.0.0",
+  "description": "* [Full build history for this repo.](https://ci.appveyor.com/project/relsqui/matrix-repro/history) * [Build matrix documentation.](https://www.appveyor.com/docs/build-configuration/#build-matrix) * [Commit filtering documentation.](https://www.appveyor.com/docs/how-to/filtering-commits/)",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/relsqui/matrix-repro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/relsqui/matrix-repro/issues"
+  },
+  "homepage": "https://github.com/relsqui/matrix-repro#readme",
+  "dependencies": {
+    "@types/node": "^12.7.1",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
+}
