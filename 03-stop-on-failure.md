@@ -102,6 +102,20 @@ async function main() {
 * **Expected/Why:** The correct behavior is for the job to fail, but if it doesn't it would mean I'm on the right track.
 * **Result:** Darn, it failed correctly. (What a weird sentence.)
 
+##
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735296)
+
+```
+async function failureFunction() {
+  await spawn('powershell', ['.\\exit-1.ps1']);
+}
+```
+
+* **Change:** The real case is spawning an external binary that fails, so let's do that too.
+* **Expected/Why:** Actually, I just realized this won't work because the powershell command is going to succeed (at running a script that fails), I need the command itself to fail. Oops.
+* **Result:** Yeah, this job succeeds (correctly). This isn't the same problem as the one I'm investigating, because the exception really does get passed up the chain in that case. Let's try another way to fail.
+
 <!-- For easy copy/paste:
 
 ##

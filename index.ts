@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 
 async function failureFunction() {
-  await spawn('powershell', ['.\\exit-1.ps1']);
+  await spawn('something that does not exist');
 }
 
 async function runThisFunction(func: Function) {
