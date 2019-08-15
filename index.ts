@@ -1,5 +1,5 @@
 async function main() {
-  console.log("Still works.");
+  process.exit(1);
 }
 
 if (process.mainModule === module) {

@@ -5,7 +5,10 @@ install:
 - appveyor-retry npm install --global --production npm-windows-upgrade
 - npm-windows-upgrade --no-prompt --no-dns-check --npm-version 6.4.1
 - npm --version
-- npm ci
+- appveyor-retry npm ci
 
 build_script:
-- ps: npm start
+- echo "Before."
+- npm start
+- echo "After."
+- ps: Write-Host "After, but in Powershell."
