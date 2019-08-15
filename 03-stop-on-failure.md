@@ -69,6 +69,39 @@ build_script:
 * **Expected/Why:** The job fails.
 * **Result:** It would have been pretty weird if that hadn't worked. Let's make it more complicated.
 
+## failing, but complicated
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735088)
+
+```
+async function failureFunction() {
+  throw new Error('Oh no, an exception!');
+}
+async function runThisFunction(func: Function) {
+  try {
+    return await func();
+  } catch (error) {
+    console.error('Caught error in runThisFunction.');
+    throw error;
+  }
+}
+
+async function main() {
+  await runThisFunction(async () => {
+    try {
+      await failureFunction();
+    } catch (e) {
+      console.error(`Error in the function passed to runThisFunction:`, e);
+      throw e;
+    }
+  });
+}
+```
+
+* **Change:** In the real code there's a lot more happening between all this silly redundancy, of course, I just copied the structure of the code and removed the functionality. If I still can't repro the problem I'll try to go a level or two deeper (the actual error is coming from an external binary).
+* **Expected/Why:** The correct behavior is for the job to fail, but if it doesn't it would mean I'm on the right track.
+* **Result:** Darn, it failed correctly. (What a weird sentence.)
+
 <!-- For easy copy/paste:
 
 ##

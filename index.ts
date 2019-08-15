@@ -1,6 +1,9 @@
+import { spawn } from "child_process";
+
 async function failureFunction() {
-  throw new Error('Oh no, an exception!');
+  await spawn('powershell', ['.\\exit-1.ps1']);
 }
+
 async function runThisFunction(func: Function) {
   try {
     return await func();
