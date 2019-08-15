@@ -1,5 +1,24 @@
+async function failureFunction() {
+  throw new Error('Oh no, an exception!');
+}
+async function runThisFunction(func: Function) {
+  try {
+    return await func();
+  } catch (error) {
+    console.error('Caught error in runThisFunction.');
+    throw error;
+  }
+}
+
 async function main() {
-  process.exit(1);
+  await runThisFunction(async () => {
+    try {
+      await failureFunction();
+    } catch (e) {
+      console.error(`Error in the function passed to runThisFunction:`, e);
+      throw e;
+    }
+  });
 }
 
 if (process.mainModule === module) {

@@ -47,6 +47,28 @@ if (process.mainModule === module) {
 * **Expected/Why:** Should just print a message but I wouldn't be surprised if there's some piece of setup I forgot. (Works locally though.)
 * **Result:** Okay cool. Now let's cause some failures!
 
+## failure is fun!
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26734942)
+
+```
+async function main() {
+  process.exit(1);
+}
+```
+
+```
+build_script:
+- echo "Before."
+- npm start
+- echo "After."
+- ps: Write-Host "After, but in Powershell."
+```
+
+* **Change:** First things first, make sure that if we exit non-zero the job dies. Added some extra lines around the actual npm call in the build script to mimic the real config. (I don't think it'll matter when they're in separate items like this but no harm in being thorough.)
+* **Expected/Why:** The job fails.
+* **Result:** It would have been pretty weird if that hadn't worked. Let's make it more complicated.
+
 <!-- For easy copy/paste:
 
 ##
