@@ -13,7 +13,7 @@ This isn't necessarily an Appveyor-specific problem (although it might be), I'm 
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26734591)
 
-```
+```yaml
 image: Visual Studio 2015
 
 build_script:
@@ -28,7 +28,7 @@ build_script:
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26734859)
 
-```
+```typescript
 async function main() {
   console.log("Still works.");
 }
@@ -51,13 +51,13 @@ if (process.mainModule === module) {
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26734942)
 
-```
+```typescript
 async function main() {
   process.exit(1);
 }
 ```
 
-```
+```yaml
 build_script:
 - echo "Before."
 - npm start
@@ -73,7 +73,7 @@ build_script:
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735088)
 
-```
+```typescript
 async function failureFunction() {
   throw new Error('Oh no, an exception!');
 }
@@ -106,7 +106,7 @@ async function main() {
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735296)
 
-```
+```typescript
 async function failureFunction() {
   await spawn('powershell', ['.\\exit-1.ps1']);
 }
@@ -120,7 +120,7 @@ async function failureFunction() {
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735346)
 
-```
+```typescript
 async function failureFunction() {
   await spawn('something that does not exist');
 }
@@ -134,7 +134,7 @@ async function failureFunction() {
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735830)
 
-```
+```typescript
 import { spawn } from './spawn-promise';
 
 async function failureFunction() {
@@ -147,6 +147,30 @@ async function failureFunction() {
 * **Change:** Noticed that `spawn` in the real case isn't default spawn, so I grabbed the promise wrapper out of the library (at the version we're using). Tested this locally and it produces the chain of errors I wanted, so should be a good test on the remote, as long as I'm remembering correctly that `ls` is aliased to `Get-ChildItem` in Powershell (or the cmd equivalent, I forget what shell you wind up in when you `spawn` in Appveyor). Find out in a sec I guess.
 * **Expected/Why:** Hopefully this will print the error chain but pass the job.
 * **Result:** Nope, failed like it was supposed to. :( WTH. Let me pore over the original error some more and see if I can track down what exactly is different between the flow in that code and in my code.
+
+... ah. After that and having dinner, I'm pretty sure I figured it out.
+
+## .then
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26736719)
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    // .then((res) => console.log('Resolved: ', res), (rej) => { throw rej; })
+    .then((res) => console.log('Resolved: ', res), (rej) => console.log('Rejected: ', rej))
+    .catch((e) => {
+      console.log('Caught error running main:');
+      console.error(e.message);
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
+```
+
+* **Change:** The piece of logic I hadn't carried over was the `.then` block from the `main()` call. After adding some logging I noticed that when it just calls external functions (as it does in the real code), that `caught error running main` message never prints -- we're eating the error at the last second before handling it. I already have what I think (from local testing) is the fix, commented. (While I was here, I realized I could add syntax highlighting to my code blocks, so I did that retroactively.)
+* **Expected/Why:** I think this will repro the error in CI -- it will print out that it failed, but the job will succeed.
+* **Result:** Yup! :tada: So switching to the commented line should fix it, and that shows me what I need to fix in the real code.
 
 <!-- For easy copy/paste:
 
