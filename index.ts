@@ -27,10 +27,15 @@ async function main() {
   });
 }
 
+async function cleanup() {
+  console.log('Cleaning up.');
+}
+
 if (process.mainModule === module) {
   main()
-    .then((res) => console.log('Resolved: ', res), (rej) => { throw rej; })
+    .then(() => cleanup())
     .catch((e) => {
+      cleanup();
       console.log('Caught error running main:');
       console.error(e.message);
       console.error(e.stack);
