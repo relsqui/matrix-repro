@@ -172,17 +172,28 @@ if (process.mainModule === module) {
 * **Expected/Why:** I think this will repro the error in CI -- it will print out that it failed, but the job will succeed.
 * **Result:** Yup! :tada: So switching to the commented line should fix it, and that shows me what I need to fix in the real code.
 
-<!-- For easy copy/paste:
+## cleanup
 
-##
-
-[Appveyor run.]()
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26737079)
 
 ```
+async function cleanup() {
+  console.log('Cleaning up.');
+}
+
+if (process.mainModule === module) {
+  main()
+    .then(() => cleanup())
+    .catch((e) => {
+      cleanup();
+      console.log('Caught error running main:');
+      console.error(e.message);
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
 ```
 
-* **Change:** 
-* **Expected/Why:** 
-* **Result:** 
-
--->
+* **Change:** Confirmed that the line which was commented above works, and then realized I could tidy it up a little more. This version is also a little truer to what's happening in the real code.
+* **Expected/Why:** Tested locally (on both the failure and success cases), so I know this'll print the error and should die and kill the job properly as well.
+* **Result:** Heck yeah, ship it. I'll see if I can get rid of some of the error reporting redundancy while I'm there, too, heh.
