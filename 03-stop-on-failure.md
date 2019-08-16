@@ -130,6 +130,24 @@ async function failureFunction() {
 * **Expected/Why:** I suspect it's the wrong kind of failure too, though. I'm trying it because it's easy but I'm not sure where the ENOENT will actually get raised or if that matters.
 * **Result:** Yeah, failed but didn't repro the problem. Although I noticed something else in this case -- the failure isn't getting propagated up the chain of error reporting, it's just killing the whole process immediately. That's weird. Is spawn not throwing a regular exception? Or do those not work the way I think they do?
 
+## make spawn more complicated too
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735830)
+
+```
+import { spawn } from './spawn-promise';
+
+async function failureFunction() {
+  const cmd = 'ls';
+  const args = ['something nonexistent'];
+  console.log(await spawn(cmd, args));
+}
+```
+
+* **Change:** Noticed that `spawn` in the real case isn't default spawn, so I grabbed the promise wrapper out of the library (at the version we're using). Tested this locally and it produces the chain of errors I wanted, so should be a good test on the remote, as long as I'm remembering correctly that `ls` is aliased to `Get-ChildItem` in Powershell (or the cmd equivalent, I forget what shell you wind up in when you `spawn` in Appveyor). Find out in a sec I guess.
+* **Expected/Why:** Hopefully this will print the error chain but pass the job.
+* **Result:** Nope, failed like it was supposed to. :( WTH. Let me pore over the original error some more and see if I can track down what exactly is different between the flow in that code and in my code.
+
 <!-- For easy copy/paste:
 
 ##
