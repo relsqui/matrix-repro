@@ -29,7 +29,10 @@ async function main() {
 
 if (process.mainModule === module) {
   main()
+    // .then((res) => console.log('Resolved: ', res), (rej) => { throw rej; })
+    .then((res) => console.log('Resolved: ', res), (rej) => console.log('Rejected: ', rej))
     .catch((e) => {
+      console.log('Caught error running main:');
       console.error(e.message);
       console.error(e.stack);
       process.exit(-1);
