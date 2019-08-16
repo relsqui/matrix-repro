@@ -8,7 +8,5 @@ install:
 - appveyor-retry npm ci
 
 build_script:
-- echo "Before."
 - npm start
-- echo "After."
-- ps: Write-Host "After, but in Powershell."
+- ps: Write-Host "After the build script."
