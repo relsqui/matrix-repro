@@ -1,7 +1,9 @@
-import { spawn } from "child_process";
+import { spawn } from './spawn-promise';
 
 async function failureFunction() {
-  await spawn('something that does not exist');
+  const cmd = 'ls';
+  const args = ['something nonexistent'];
+  console.log(await spawn(cmd, args));
 }
 
 async function runThisFunction(func: Function) {

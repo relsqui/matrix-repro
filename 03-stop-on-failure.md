@@ -102,7 +102,7 @@ async function main() {
 * **Expected/Why:** The correct behavior is for the job to fail, but if it doesn't it would mean I'm on the right track.
 * **Result:** Darn, it failed correctly. (What a weird sentence.)
 
-##
+## fail, but in powershell
 
 [Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735296)
 
@@ -115,6 +115,20 @@ async function failureFunction() {
 * **Change:** The real case is spawning an external binary that fails, so let's do that too.
 * **Expected/Why:** Actually, I just realized this won't work because the powershell command is going to succeed (at running a script that fails), I need the command itself to fail. Oops.
 * **Result:** Yeah, this job succeeds (correctly). This isn't the same problem as the one I'm investigating, because the exception really does get passed up the chain in that case. Let's try another way to fail.
+
+## courting ENOENT
+
+[Appveyor run.](https://ci.appveyor.com/project/relsqui/matrix-repro/builds/26735346)
+
+```
+async function failureFunction() {
+  await spawn('something that does not exist');
+}
+```
+
+* **Change:** This will definitely fail.
+* **Expected/Why:** I suspect it's the wrong kind of failure too, though. I'm trying it because it's easy but I'm not sure where the ENOENT will actually get raised or if that matters.
+* **Result:** Yeah, failed but didn't repro the problem. Although I noticed something else in this case -- the failure isn't getting propagated up the chain of error reporting, it's just killing the whole process immediately. That's weird. Is spawn not throwing a regular exception? Or do those not work the way I think they do?
 
 <!-- For easy copy/paste:
 
