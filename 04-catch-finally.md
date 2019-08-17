@@ -301,6 +301,54 @@ npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_05_06_504Z-debug.log
 
 Onwards to verifying that failing in cleanup works (that is, doesn't work) the way we expect.
 
+## fail in cleanup
+
+```typescript
+async function main() {
+  console.log('Main.');
+}
+
+async function cleanup() {
+  console.log('Cleaning up.');
+  fail();
+}
+```
+
+* **Change:** Moved the failure call to cleanup instead of main.
+* **Expected/Why:** Had to actually sit and think about this one. Main will run and terminate normally, .then will call cleanup, cleanup will throw, and I _think_ that will go to .catch, at which point cleanup will run again (erk) and throw again (erk) and node will die without getting to the `Caught error running main` print. Final answer.
+* **Result:** Oh huh. True but not quite how I expected:
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Cleaning up.
+(node:58657) UnhandledPromiseRejectionWarning: Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:11:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at cleanup (/Users/finnre/matrix-repro/index.ts:49:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:18:13)
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+(node:58657) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 5)
+(node:58657) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+0
+```
+
+I had remarked to my teammate that if we don't mind the cleanup not running in the failure case, we don't actually care if it throws inside .catch, because the CI job is going to die anyway. But it's not, because it exits with 0, so we really do need to handle this properly. (Also, the cleanup might matter outside of CI.)
+
+This is a case where it would be handy if node actually did exit with a non-zero code like it keeps threatening to. :P
+
+Anyway, one last thing before getting into .finally: let's verify the solution that I went with in the real code, which I think works, but is just kinda ugly which is why I'm trying to improve on it.
+
 <!-- For easy copy/paste:
 
 ##

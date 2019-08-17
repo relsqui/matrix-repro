@@ -4,11 +4,11 @@ function fail() {
 
 async function main() {
   console.log('Main.');
-  fail();
 }
 
 async function cleanup() {
   console.log('Cleaning up.');
+  fail();
 }
 
 if (process.mainModule === module) {
