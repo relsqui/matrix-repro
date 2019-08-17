@@ -529,6 +529,64 @@ This does kind of imply that my original question was correct! The order in whic
 
 First of all, does the order in which they're _defined_ matter? I expect not, but let's check 'cause it's easy.
 
+## .catch .finally
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    .catch(async (e) => {
+      console.log('Caught error running main:');
+      console.error(e.stack);
+      process.exit(-1);
+    })
+    .finally(() => cleanup());
+}
+```
+
+* **Change:** Switch the order in which the .catch and .finally handlers are defined.
+* **Expected/Why:** Same as above. I wouldn't expect the order in which handlers are defined to affect the order in which they're run, but it would be a good thing to know if that's wrong. (If it is wrong, we'll see the stack print, but cleanup won't run.)
+* **Result:** Ooh interesting!
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at main (/Users/finnre/matrix-repro/index.ts:41:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:15:3)
+    at Module._compile (internal/modules/cjs/loader.js:688:30)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_49_57_520Z-debug.log
+255
+```
+
+Stack, no cleanup. And now (as I speculated earlier) it makes sense that I couldn't find a defined order anywhere; the order is the one in which they're defined.
+
+That's ... a little confusing to figure out, but actually pretty nice. It means I can make it do the thing I want.
+
+(I guess this might be because we're actually returning new promises through the chain each time? But in that case I don't know how the exception makes it from main out to the .catch block when .finally is defined first, and we saw that it does. This is kinda making me want to dig into the spec or the code and find out, but uh ... not at 7pm on a Friday.)
+
+One more thing before I wrap up for the night. Let's switch back to the handler order we actually want and make sure it does the right thing when the error is in cleanup.
+
 <!-- For easy copy/paste:
 
 ##
