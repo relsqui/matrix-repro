@@ -587,15 +587,64 @@ That's ... a little confusing to figure out, but actually pretty nice. It means 
 
 One more thing before I wrap up for the night. Let's switch back to the handler order we actually want and make sure it does the right thing when the error is in cleanup.
 
-<!-- For easy copy/paste:
-
-##
+## .finally .catch when cleanup fails
 
 ```typescript
+async function main() {
+  console.log('Main.');
+}
+
+async function cleanup() {
+  console.log('Cleaning up.');
+  fail();
+}
+
+if (process.mainModule === module) {
+  main()
+    .finally(() => cleanup())
+    .catch(async (e) => {
+      console.log('Caught error running main:');
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
 ```
 
-* **Change:** 
-* **Expected/Why:** 
-* **Result:** 
+* **Change:** Put the handlers back in order and moved the failure to the cleanup function.
+* **Expected/Why:** I think this'll also work. Main will complete cleanly and hit the .finally, cleanup will run and fail, and .catch will print the stack.
+* **Result:** Oh, that worked but brought up another interesting point.
 
--->
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:11:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at cleanup (/Users/finnre/matrix-repro/index.ts:49:12)
+    at /Users/finnre/matrix-repro/index.ts:16:20
+    at <anonymous>
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_58_54_181Z-debug.log
+255
+```
+
+"Caught error running main" is just inaccurate. In the real code there isn't a message there, although maybe there should be -- I just added that in the demo to keep me oriented. So I won't worry about it for now. I'm just going to apply this fix to my branch on the real repo and then call it a night.
