@@ -9,4 +9,3 @@ install:
 
 build_script:
 - npm start
-- ps: Write-Host "After the build script."
