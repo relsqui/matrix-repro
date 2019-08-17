@@ -4,18 +4,17 @@ function fail() {
 
 async function main() {
   console.log('Main.');
+  fail();
 }
 
 async function cleanup() {
   console.log('Cleaning up.');
-  fail();
 }
 
 if (process.mainModule === module) {
   main()
-    .then(() => cleanup())
+    .then(() => cleanup(), async (err) => { await cleanup(); throw err; })
     .catch(async (e) => {
-      await cleanup();
       console.log('Caught error running main:');
       console.error(e.stack);
       process.exit(-1);

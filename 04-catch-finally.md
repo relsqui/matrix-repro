@@ -349,6 +349,61 @@ This is a case where it would be handy if node actually did exit with a non-zero
 
 Anyway, one last thing before getting into .finally: let's verify the solution that I went with in the real code, which I think works, but is just kinda ugly which is why I'm trying to improve on it.
 
+## clean up and then re-throw
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    .then(() => cleanup(), async (err) => { await cleanup(); throw err; })
+    .catch(async (e) => {
+      console.log('Caught error running main:');
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
+```
+
+* **Change:** Define a reject function, in which we call the cleanup function, wait for it to complete, and then throw the error out to .catch.
+* **Expected/Why:** Clean failure. Specifically, main exits normally, we drop to .then's resolve function, we run cleanup, it fails, we drop to .catch, and it prints the stack.
+* **Result:** Nailed it.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:11:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at cleanup (/Users/finnre/matrix-repro/index.ts:49:12)
+    at /Users/finnre/matrix-repro/index.ts:16:17
+    at <anonymous>
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_19_09_520Z-debug.log
+255
+```
+
+Actually the better test of this case is putting the failure back in main, so that we hit the reject function and fall out of cleanup there. I'll check that real quick but I'm not going to paste the result unless it's unexpected.
+
+It was not! Onwards.
+
 <!-- For easy copy/paste:
 
 ##
