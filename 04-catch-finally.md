@@ -215,6 +215,51 @@ Also, I learned that printing the message is redundant with the stack, let's sto
 
 Interesting that the exit code wound up as 255, is that really an unsigned char? What even would define that? Bash, I guess? Choosing not to research it right now but there's an easy way to verify that's what's going on at least.
 
+## exit -2
+
+```typescript
+      process.exit(-2);
+```
+
+* **Change:** Exit -2 instead.
+* **Expected/Why:** If I'm right that it's an unsigned char, this should be 254. Otherwise node is just overriding it, which is kinda rude.
+* **Result:** K cool.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at main (/Users/finnre/matrix-repro/index.ts:41:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:15:3)
+    at Module._compile (module.js:660:30)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 254
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 254
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T00_59_52_384Z-debug.log
+254
+```
+
+... anyway, where were we. Let's restore .then now that we know it's not the culprit.
+
 <!-- For easy copy/paste:
 
 ##

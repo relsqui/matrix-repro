@@ -18,6 +18,6 @@ if (process.mainModule === module) {
       await cleanup();
       console.log('Caught error running main:');
       console.error(e.stack);
-      process.exit(-1);
+      process.exit(-2);
     });
 }
