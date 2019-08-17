@@ -197,3 +197,7 @@ if (process.mainModule === module) {
 * **Change:** Confirmed that the line which was commented above works, and then realized I could tidy it up a little more. This version is also a little truer to what's happening in the real code.
 * **Expected/Why:** Tested locally (on both the failure and success cases), so I know this'll print the error and should die and kill the job properly as well.
 * **Result:** Heck yeah, ship it. I'll see if I can get rid of some of the error reporting redundancy while I'm there, too, heh.
+
+---
+
+(I ended up deciding to merge the whole thing in after all, I can always go back and find the commit filter stuff if I need it but I have other things to test in the meantime, some of which can use this node setup.)
