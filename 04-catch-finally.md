@@ -260,6 +260,47 @@ npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T00_59_52_384Z-debug.log
 
 ... anyway, where were we. Let's restore .then now that we know it's not the culprit.
 
+## restore .then
+
+* **Change:** Not bothering to paste it, just uncommented the .then line again. Also switching the exit code back to -1 because it'll bug me if it's off by one for no reason.
+* **Expected/Why:** We still get the stack and error message we want.
+* **Result:** Okay, back on track.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at main (/Users/finnre/matrix-repro/index.ts:41:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:15:3)
+    at Module._compile (module.js:660:30)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_05_06_504Z-debug.log
+255
+```
+
+Onwards to verifying that failing in cleanup works (that is, doesn't work) the way we expect.
+
 <!-- For easy copy/paste:
 
 ##
