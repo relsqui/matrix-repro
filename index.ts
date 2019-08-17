@@ -1,4 +1,4 @@
-async function fail() {
+function fail() {
   throw new Error('Failing.');
 }
 
@@ -13,11 +13,10 @@ async function cleanup() {
 
 if (process.mainModule === module) {
   main()
-    .then(() => cleanup())
+    // .then(() => cleanup())
     .catch(async (e) => {
       await cleanup();
       console.log('Caught error running main:');
-      console.error(e.message);
       console.error(e.stack);
       process.exit(-1);
     });

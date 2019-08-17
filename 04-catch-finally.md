@@ -139,6 +139,82 @@ Cleaning up.
 
 I need to start reading my errors and not just assuming I know what they are. This is the same one and they really are about the exception I'm throwing. That's weird. I thought this was what .catch was for. Let me check real quick what happens if there's no .then at all, so .catch is connected directly to the relevant function?
 
+## no .then
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    // .then(() => cleanup())
+    .catch(async (e) => {
+      await cleanup();
+      console.log('Caught error running main:');
+      console.error(e.message);
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
+```
+
+* **Change:** Commented out .then so we can see .catch working at all.
+* **Expected/Why:** Okay, before even running this one I realized that there's another place we're not handling an async function properly, which is the failure call! There's actually no reason for that to be async so let me fix it in the other direction just to make my life easier. Breaking format for a sec to do that (this is in addition to the above changes):
+
+```typescript
+function fail() {
+  throw new Error('Failing.');
+}
+```
+
+Now the expected result, again, is the stack trace and error message, here we go.
+
+* **Result:** Yay!
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Failing.
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at main (/Users/finnre/matrix-repro/index.ts:41:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:15:3)
+    at Module._compile (module.js:660:30)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T00_55_23_738Z-debug.log
+255
+```
+
+Also, I learned that printing the message is redundant with the stack, let's stop doing that.
+
+```typescript
+    .catch(async (e) => {
+      await cleanup();
+      console.log('Caught error running main:');
+      console.error(e.stack);
+      process.exit(-1);
+    });
+```
+
+Interesting that the exit code wound up as 255, is that really an unsigned char? What even would define that? Bash, I guess? Choosing not to research it right now but there's an easy way to verify that's what's going on at least.
+
 <!-- For easy copy/paste:
 
 ##
