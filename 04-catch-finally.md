@@ -404,6 +404,131 @@ Actually the better test of this case is putting the failure back in main, so th
 
 It was not! Onwards.
 
+## .finally, finally
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    .finally(() => cleanup())
+    .catch(async (e) => {
+      console.log('Caught error running main:');
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
+```
+
+* **Change:** Instead of .then, use .finally, since we want to do the same thing (ish) no matter how we resolve.
+* **Expected/Why:** My guess is that this doesn't actually work -- we lose the error information in .finally. The failure is in main right now, so we'll throw from main, clean up in finally, and never print the stack.
+* **Result:** Wh--hey.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+
+/Users/finnre/matrix-repro/index.ts:16
+    .finally(() => cleanup())
+            ^
+TypeError: main(...).finally is not a function
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:16:13)
+    at Module._compile (module.js:660:30)
+    at Module.m._compile (/Users/finnre/matrix-repro/node_modules/ts-node/src/index.ts:473:23)
+    at Module._extensions..js (module.js:671:10)
+    at Object.require.extensions.(anonymous function) [as .ts] (/Users/finnre/matrix-repro/node_modules/ts-node/src/index.ts:476:12)
+    at Module.load (module.js:573:32)
+    at tryModuleLoad (module.js:513:12)
+    at Function.Module._load (module.js:505:3)
+    at Function.Module.runMain (module.js:701:10)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/node_modules/ts-node/src/bin.ts:158:12)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_24_12_293Z-debug.log
+1
+```
+
+...
+
+.finally is supposed to be in node 10, which I thought is what I was ...
+
+```
+$ node --version
+v9.5.0
+```
+
+Fair enough.
+
+Oh, right, I set it up in my Appveyor config when I was doing CI testing, but I never thought to update it on my local machine.
+
+After a bit of a detour screwing up and fixing my npm setup ...
+
+```
+$ sudo n 10.12.0
+
+  installing : node-v10.12.0
+       mkdir : /usr/local/n/versions/node/10.12.0
+       fetch : https://nodejs.org/dist/v10.12.0/node-v10.12.0-darwin-x64.tar.gz
+   installed : v10.12.0 (with npm 6.4.1)
+
+SFO-M-FELLIS03:matrix-repro finnre$ node --version
+v10.12.0
+```
+
+Now then.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+Caught error running main:
+Error: Failing.
+    at fail (/Users/finnre/matrix-repro/index.ts:2:9)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at main (/Users/finnre/matrix-repro/index.ts:41:12)
+    at Object.<anonymous> (/Users/finnre/matrix-repro/index.ts:15:3)
+    at Module._compile (internal/modules/cjs/loader.js:688:30)
+npm ERR! code ELIFECYCLE
+npm ERR! errno 255
+npm ERR! matrix-repro@1.0.0 start: `ts-node index.ts`
+npm ERR! Exit status 255
+npm ERR! 
+npm ERR! Failed at the matrix-repro@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/finnre/.npm/_logs/2019-08-17T01_37_04_593Z-debug.log
+255
+```
+
+Oh shit! It's not often these surprise me by _working_.
+
+... how does this work?
+
+.finally and .catch aren't actually defining a sequence of code blocks, they're defining handlers. I guess promises are smart enough to run both the "okay whatever happened I'm all done" handler and the "something threw an exception in here" handler when both of those things are true.
+
+This does kind of imply that my original question was correct! The order in which those handlers get triggered matters, but it seems to be the correct one. I want to investigate a couple more things though.
+
+First of all, does the order in which they're _defined_ matter? I expect not, but let's check 'cause it's easy.
+
 <!-- For easy copy/paste:
 
 ##

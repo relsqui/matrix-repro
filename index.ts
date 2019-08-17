@@ -13,7 +13,7 @@ async function cleanup() {
 
 if (process.mainModule === module) {
   main()
-    .then(() => cleanup(), async (err) => { await cleanup(); throw err; })
+    .finally(() => cleanup())
     .catch(async (e) => {
       console.log('Caught error running main:');
       console.error(e.stack);
