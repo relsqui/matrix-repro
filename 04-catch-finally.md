@@ -65,7 +65,7 @@ async function main() {
 
 * **Change:** Uncomment the failure in `main`.
 * **Expected/Why:** We get a stack trace and a -1 exit code, because the error will fall through to `.catch`.
-* **Result:** Yup.
+* **Result:** Y--hey wait.
 
 ```
 $ npm start; echo $?
@@ -91,7 +91,53 @@ Cleaning up.
 0
 ```
 
-Oh, and I guess node complains because we didn't technically handle the rejection anywhere. Quick detour, does defining the reject function explicitly handle that?
+Node complains because we didn't technically handle the rejection anywhere, which is fine, but it's doing that instead of ... ohh no wait. It's complaining because `cleanup` is async and we're not doing anything about that. Fair enough.
+
+## await cleanup
+
+```typescript
+if (process.mainModule === module) {
+  main()
+    .then(() => cleanup())
+    .catch(async (e) => {
+      await cleanup();
+      console.log('Caught error running main:');
+      console.error(e.message);
+      console.error(e.stack);
+      process.exit(-1);
+    });
+}
+```
+
+* **Change:** Make the `.catch` handler async so we can await ... okay I'm tired of putting backticks around everything. So we can await cleanup. (I've made this mistake like three times while working on this, I'm sure eventually the lesson will stick??)
+* **Expected/Why:** The result we wanted above, a stack trace and a -1 exit code.
+* **Result:** Okay, now what.
+
+```
+$ npm start; echo $?
+
+> matrix-repro@1.0.0 start /Users/finnre/matrix-repro
+> ts-node index.ts
+
+Main.
+Cleaning up.
+(node:57518) UnhandledPromiseRejectionWarning: Error: Failing.
+    at /Users/finnre/matrix-repro/index.ts:2:9
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+    at /Users/finnre/matrix-repro/index.ts:6:71
+    at new Promise (<anonymous>)
+    at __awaiter (/Users/finnre/matrix-repro/index.ts:2:12)
+    at fail (/Users/finnre/matrix-repro/index.ts:38:12)
+    at /Users/finnre/matrix-repro/index.ts:7:3
+    at step (/Users/finnre/matrix-repro/index.ts:31:23)
+    at Object.next (/Users/finnre/matrix-repro/index.ts:12:53)
+(node:57518) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 1)
+(node:57518) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+0
+```
+
+I need to start reading my errors and not just assuming I know what they are. This is the same one and they really are about the exception I'm throwing. That's weird. I thought this was what .catch was for. Let me check real quick what happens if there's no .then at all, so .catch is connected directly to the relevant function?
 
 <!-- For easy copy/paste:
 
