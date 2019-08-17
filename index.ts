@@ -4,7 +4,7 @@ async function fail() {
 
 async function main() {
   console.log('Main.');
-  // fail();
+  fail();
 }
 
 async function cleanup() {
