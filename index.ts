@@ -1,7 +1,7 @@
 import { spawnPromise } from 'spawn-rx';
 
 async function main() {
-  return spawnPromise('Add-AppveyorMessage', ['-message', 'yep, this spawns powershell']);
+  return spawnPromise('appveyor', ['AddMessage', 'this spawns cmd']);
 }
 
 if (process.mainModule === module) {
