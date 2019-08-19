@@ -18,6 +18,7 @@
   "homepage": "https://github.com/relsqui/matrix-repro#readme",
   "dependencies": {
     "@types/node": "^12.7.1",
+    "spawn-rx": "^2.0.12",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }

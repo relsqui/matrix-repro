@@ -1,19 +1,11 @@
-function fail() {
-  throw new Error('Failing.');
-}
+import { spawnPromise } from 'spawn-rx';
 
 async function main() {
-  console.log('Main.');
-}
-
-async function cleanup() {
-  console.log('Cleaning up.');
-  fail();
+  return spawnPromise('Write-Host', ["yep, this spawns powershell"]);
 }
 
 if (process.mainModule === module) {
   main()
-    .finally(() => cleanup())
     .catch(async (e) => {
       console.log('Caught error running main:');
       console.error(e.stack);
